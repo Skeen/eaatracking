@@ -44,7 +44,7 @@ namespace PhoneApp2
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             var epl = e.Position.Location;
-            textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + epl.Longitude.ToString("0.000") + "\n";
+            textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
         }
     }
 }
