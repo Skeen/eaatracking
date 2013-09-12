@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Device.Location;
+using Microsoft.Phone.Controls.Maps;
 
 namespace PhoneApp2
 {
@@ -43,8 +44,31 @@ namespace PhoneApp2
 
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
+            if (e.Position.Location.IsUnknown)
+            {
+                MessageBox.Show("Please wait while your prosition is determined....");
+                return;
+            }
             var epl = e.Position.Location;
             textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
+
+            map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
+
+            if (map1.Children.Count != 0)
+            {
+                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && ((Pushpin)p).Tag == "locationPushpin"));
+
+                if (pushpin != null)
+                {
+                    map1.Children.Remove(pushpin);
+                }
+            }
+
+            Pushpin locationPushpin = new Pushpin();
+            locationPushpin.Tag = "locationPushpin";
+            locationPushpin.Location = watcher.Position.Location;
+            map1.Children.Add(locationPushpin);
+            map1.SetView(watcher.Position.Location, 18.0);
         }
     }
 }
