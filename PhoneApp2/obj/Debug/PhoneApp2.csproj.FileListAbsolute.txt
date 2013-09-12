@@ -1,0 +1,12 @@
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\ApplicationIcon.png
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\Background.png
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\PhoneApp2.dll
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\PhoneApp2.pdb
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\AppManifest.xaml
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\Bin\Debug\PhoneApp2.xap
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\App.g.i.cs
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\MainPage.g.i.cs
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.g.resources
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.dll
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.pdb
+c:\users\skeen\documents\visual studio 2010\Projects\PhoneApp2\PhoneApp2\obj\Debug\XapCacheFile.xml
