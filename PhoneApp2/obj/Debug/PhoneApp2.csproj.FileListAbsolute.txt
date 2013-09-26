@@ -36,3 +36,5 @@ C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.g.resources
 C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.dll
 C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.pdb
 C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\obj\Debug\XapCacheFile.xml
+C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\Microsoft.Phone.Controls.Maps.dll
+C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\Microsoft.Phone.Controls.Maps.xml

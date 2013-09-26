@@ -18,6 +18,7 @@ namespace PhoneApp2
     public partial class MainPage : PhoneApplicationPage
     {
         private GeoCoordinateWatcher watcher;
+        private Boolean tracking = false;
         // Constructor
         public MainPage()
         {
@@ -30,16 +31,28 @@ namespace PhoneApp2
             watcher.PositionChanged += this.watcher_PositionChanged;
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void startButton_Click(object sender, RoutedEventArgs e)
         {
-            textBlock1.Text = textBlock1.Text + "\n" + "Start Tracking" + "\n";
-            watcher.Start();
+            if (!tracking)
+            {
+                textBlock1.Text = textBlock1.Text + "\n" + "Start Tracking" + "\n";
+                watcher.Start();
+                tracking = true;
+                stopButton.Opacity = 1.0;
+                startButton.Opacity = 0.5;
+            }
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void stopButton_Click(object sender, RoutedEventArgs e)
         {
-            textBlock1.Text = textBlock1.Text + "\n" + "Stop Tracking" + "\n";
-            watcher.Stop();
+            if (tracking)
+            {
+                textBlock1.Text = textBlock1.Text + "\n" + "Stop Tracking" + "\n";
+                watcher.Stop();
+                tracking = false;
+                stopButton.Opacity = 0.5;
+                startButton.Opacity = 1.0;
+            }
         }
 
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
@@ -68,7 +81,7 @@ namespace PhoneApp2
             locationPushpin.Tag = "locationPushpin";
             locationPushpin.Location = watcher.Position.Location;
             map1.Children.Add(locationPushpin);
-            map1.SetView(watcher.Position.Location, 18.0);
+            map1.SetView(watcher.Position.Location, 16.0);
         }
     }
 }

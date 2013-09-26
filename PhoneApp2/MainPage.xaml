@@ -28,8 +28,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button Content="Start" Height="72" HorizontalAlignment="Left" Margin="47,34,0,0" Name="button1" VerticalAlignment="Top" Width="160" Click="button1_Click" />
-            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="253,34,0,0" Name="button2" VerticalAlignment="Top" Width="160" Click="button2_Click" />
+            <Button Content="Start" Height="72" HorizontalAlignment="Left" Margin="47,34,0,0" Name="startButton" VerticalAlignment="Top" Width="160" Click="startButton_Click" />
+            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="253,34,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" Opacity="0.5" />
             <ScrollViewer Height="200" Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="82,128,174,279">
                 <TextBlock Width="300" TextWrapping="Wrap" Text="" Name="textBlock1"/>
             </ScrollViewer>

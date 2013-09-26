@@ -1,11 +1,11 @@
-﻿<xapCache source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Bin\Debug\PhoneApp2.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="12-09-2013 17:55:49">
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Bin\Debug\WMAppManifest.xml" archivePath="WMAppManifest.xml" lastWriteTime="12-09-2013 13:53:53" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Background.png" archivePath="Background.png" lastWriteTime="12-09-2013 13:53:29" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="12-09-2013 13:53:29" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\obj\Debug\PhoneApp2.dll" archivePath="PhoneApp2.dll" lastWriteTime="12-09-2013 17:55:48" />
+﻿<xapCache source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\PhoneApp2.xap" wasSigned="False" certificateThumbprint="" TimeStampUrl="" lastWriteTime="26-09-2013 13:05:33">
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\WMAppManifest.xml" archivePath="WMAppManifest.xml" lastWriteTime="12-09-2013 15:29:24" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Background.png" archivePath="Background.png" lastWriteTime="12-09-2013 15:29:24" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="12-09-2013 15:29:24" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\obj\Debug\PhoneApp2.dll" archivePath="PhoneApp2.dll" lastWriteTime="26-09-2013 13:05:33" />
   <file source="C:\Program Files (x86)\Microsoft SDKs\Windows Phone\v7.1\Libraries\Silverlight\Microsoft.Phone.Controls.Maps.dll" archivePath="Microsoft.Phone.Controls.Maps.dll" lastWriteTime="15-09-2011 15:36:26" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\SplashScreenImage.jpg" archivePath="SplashScreenImage.jpg" lastWriteTime="12-09-2013 13:53:29" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="12-09-2013 17:55:49" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Bin\Debug\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="12-09-2013 13:53:29" />
-  <file source="C:\Users\Skeen\Desktop\PhoneApp2\PhoneApp2\Bin\Debug\Background.png" archivePath="Background.png" lastWriteTime="12-09-2013 13:53:29" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\SplashScreenImage.jpg" archivePath="SplashScreenImage.jpg" lastWriteTime="12-09-2013 15:29:24" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\AppManifest.xaml" archivePath="AppManifest.xaml" lastWriteTime="26-09-2013 12:36:52" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\ApplicationIcon.png" archivePath="ApplicationIcon.png" lastWriteTime="12-09-2013 15:29:24" />
+  <file source="C:\Users\Andreas Portable\Documents\Visual Studio 2010\Projects\eaatracking-code\PhoneApp2\Bin\Debug\Background.png" archivePath="Background.png" lastWriteTime="12-09-2013 15:29:24" />
 </xapCache>
