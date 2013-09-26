@@ -29,13 +29,13 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <Button Content="Start" Height="72" HorizontalAlignment="Left" Margin="47,34,0,0" Name="startButton" VerticalAlignment="Top" Width="160" Click="startButton_Click" />
-            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="253,34,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" Opacity="0.5" />
-            <ScrollViewer Height="200" Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="82,128,174,279">
-                <TextBlock Width="300" TextWrapping="Wrap" Text="" Name="textBlock1"/>
+            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="253,34,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" />
+            <ScrollViewer Height="200" Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="47,112,209,295">
+                <TextBlock Width="200" TextWrapping="Wrap" Text="" Name="textBlock1"/>
             </ScrollViewer>
             <my:Map Height="267" HorizontalAlignment="Left" Margin="0,334,0,0" Name="map1" VerticalAlignment="Top" Width="450"
                     CredentialsProvider="AqebzFfihJbcvGQ3wADMS-lIv7XOCgZndWwoCyYxrbwoYhP1EUcjmBMCl3qYUhTY" />
-            
+            <TextBlock Height="200" HorizontalAlignment="Left" Margin="253,112,0,0" Name="speedBox" Text="" VerticalAlignment="Top" Width="160" />
         </Grid>
     </Grid>
  

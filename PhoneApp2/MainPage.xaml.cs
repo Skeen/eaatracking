@@ -19,6 +19,8 @@ namespace PhoneApp2
     {
         private GeoCoordinateWatcher watcher;
         private Boolean tracking = false;
+        private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
+        
         // Constructor
         public MainPage()
         {
@@ -26,11 +28,15 @@ namespace PhoneApp2
 
             watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default)
                    {
-                       MovementThreshold = 20
+                       MovementThreshold = 5
                    };
             watcher.PositionChanged += this.watcher_PositionChanged;
+            watcher.PositionChanged += this.watcher_SpeedLevels;
         }
 
+
+        /* Handle the information given when the start button is pressed. 
+         * Currently starting the tracking */
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
             if (!tracking)
@@ -43,6 +49,8 @@ namespace PhoneApp2
             }
         }
 
+        /* Handle the information given when the stop button is pressed.
+         * Currently stopping the tracking */
         private void stopButton_Click(object sender, RoutedEventArgs e)
         {
             if (tracking)
@@ -55,6 +63,7 @@ namespace PhoneApp2
             }
         }
 
+        // Method to change your position on the map, when the phone move positon.
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             if (e.Position.Location.IsUnknown)
@@ -82,6 +91,37 @@ namespace PhoneApp2
             locationPushpin.Location = watcher.Position.Location;
             map1.Children.Add(locationPushpin);
             map1.SetView(watcher.Position.Location, 16.0);
+
+        }
+
+        /* Method to handle the speed of which our runner (walker) is moving.
+         * Also handle the zoom level of the map. */
+        private void watcher_SpeedLevels(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            if (e.Position.Location.IsUnknown)
+            {
+                MessageBox.Show("Please wait while your speed is determined....");
+                return;
+            }
+
+            if (lastKnownLocation != null)
+            {
+                // Random funtions to hopefully clean up the code (somewhat)
+                var oldLocation = lastKnownLocation.Position.Location;
+                var oldTime     = lastKnownLocation.Position.Timestamp;
+                var newLocation = e.Position.Location;
+                var newTime     = e.Position.Timestamp;
+                
+                var distance = oldLocation.GetDistanceTo(newLocation);
+                var time = newTime.Subtract(oldTime);
+
+                var speed = Math.Round(distance / time.TotalSeconds);
+                var speedKm = speed * 3.6;
+                speedBox.Text = speed.ToString() + " m/sec\n" + speedKm.ToString() + " km/h";
+                map1.ZoomLevel = speedKm * 0.5;
+            }
+            
+            lastKnownLocation = e;
         }
     }
 }
