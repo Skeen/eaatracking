@@ -74,11 +74,13 @@ namespace PhoneApp2
             var epl = e.Position.Location;
             textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
 
+            OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
+
             map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
 
             if (map1.Children.Count != 0)
             {
-                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && ((Pushpin)p).Tag == "locationPushpin"));
+                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
 
                 if (pushpin != null)
                 {
