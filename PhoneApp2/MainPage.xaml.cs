@@ -69,7 +69,7 @@ namespace PhoneApp2
 
             if (map1.Children.Count != 0)
             {
-                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && ((Pushpin)p).Tag == "locationPushpin"));
+                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
 
                 if (pushpin != null)
                 {
