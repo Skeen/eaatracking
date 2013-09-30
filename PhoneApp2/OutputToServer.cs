@@ -31,8 +31,8 @@ namespace PhoneApp2
                 {
                     WebResponse response = request.EndGetResponse(result);
                 }
-                catch (WebException e)
-                {
+                catch (WebException)
+                {                    
                     return;
                 }
             }

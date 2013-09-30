@@ -120,7 +120,7 @@ namespace PhoneApp2
                 var speed = Math.Round(distance / time.TotalSeconds);
                 var speedKm = speed * 3.6;
                 speedBox.Text = speed.ToString() + " m/sec\n" + speedKm.ToString() + " km/h";
-                map1.ZoomLevel = speedKm * 0.5;
+                map1.ZoomLevel = 20 - (speedKm * 0.3);
             }
             
             lastKnownLocation = e;
