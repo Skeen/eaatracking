@@ -1,6 +1,8 @@
 # use glob syntax.
 syntax: glob
 
+Embedded/NetduinoApplication1/NetduinoApplication1/bin/*
+Embedded/NetduinoApplication1/NetduinoApplication1/obj/*
 PhoneApp2/Bin/*
 PhoneApp2/obj/*
 *~
