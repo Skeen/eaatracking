@@ -121,7 +121,6 @@ namespace PhoneApp2
             }
         }
 
-        bool firstTime = true;
         // Method to change your position on the map, when the phone move positon.
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
@@ -131,7 +130,6 @@ namespace PhoneApp2
                 MessageBox.Show("Please wait while your prosition is determined....");
                 return;
             }
-
             if (!paused)
             {
                 // Get the current location and prints it.
