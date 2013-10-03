@@ -1,0 +1,13 @@
+# use glob syntax.
+syntax: glob
+
+Embedded/WebServer/bin/*
+Embedded/WebServer/obj/*
+PhoneApp2/Bin/*
+PhoneApp2/obj/*
+*~
+*.pyc
+*.swp
+*.dblite
+*.stackdump
+
