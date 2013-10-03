@@ -167,17 +167,17 @@ namespace PhoneApp2
                 var lastKnownLocationPosition = lastKnownLocation.Position.Location;
                 var lastKnownLocationTime = lastKnownLocation.Position.Timestamp;
                 var currentPosition = e.Position.Location;
-                var currentTimeSinceLastKnownPosition = e.Position.Timestamp;
+                var currentTime = e.Position.Timestamp;
 
                 // Calculate the difference between this and the preivous location.
                 var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
-                var timeFromLastKnownLocation = currentTimeSinceLastKnownPosition.Subtract(lastKnownLocationTime);
+                var timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
 
                 // Calculate the speed and adjusts the map accordingly. 
                 var currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
                 // Calculate the distance traveled from last point
                 distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
-                var totalTimePassedSinceStart = currentTimeSinceLastKnownPosition.Subtract(startTime);
+                var totalTimePassedSinceStart = currentTime.Subtract(startTime);
                 var averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
 
                 infoBlock.Text = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
@@ -190,6 +190,7 @@ namespace PhoneApp2
                 // We are done now, and save the variables for future use.
                 lastKnownLocation = e;
                 timePassed = totalTimePassedSinceStart;
+
             }
             else if (!paused)
             {
@@ -203,5 +204,11 @@ namespace PhoneApp2
                 lastKnownLocation = e;
             }
         }
+    }
+
+    struct locationData
+    {
+        public double Time;
+        public GeoCoordinate Location;
     }
 }
