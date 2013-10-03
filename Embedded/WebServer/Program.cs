@@ -13,9 +13,9 @@ namespace WebServer
 {
     public class Program
     {
-        private static const string ip = "10.9.8.2";
-        private static const string netmask = "255.0.0.0";
-        private static const string gateway = "";
+        private const string ip = "10.9.8.2";
+        private const string netmask = "255.0.0.0";
+        private const string gateway = "";
 
         public static void Main()
         {
