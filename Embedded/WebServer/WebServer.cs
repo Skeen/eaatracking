@@ -6,6 +6,7 @@ using System.Threading;
 using System.Text;
 using Microsoft.SPOT.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
+
 namespace WebServer
 {
     public class WebServer : IDisposable
@@ -14,6 +15,7 @@ namespace WebServer
         private Socket socket = null;
         //open connection to onbaord led so we can blink it with every request
         private OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
+
         public WebServer()
         {
             tempsensor = new TempratureSensor();
