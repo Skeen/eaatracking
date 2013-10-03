@@ -11,13 +11,19 @@ namespace WebServer
 {
     class TempratureSensor : IDisposable
     {
-        private static const UInt16 sensor_address = 0x4F;
-        private static const int sensor_clock_rate = 100;
-        private static const int read_time_out = 100;
+        private const UInt16 sensor_address = 0x4F;
+        private const int sensor_clock_rate = 100;
+        private const int read_time_out = 100;
 
+        // The actual I2C sensor
         private I2CDevice sensor;
+        // The read I2C transaction
         private I2CDevice.I2CTransaction[] read_transaction;
+        // The buffer to place read data into
         private byte[] buffer_temp = new byte[2];
+        // The last time we've read the sensor.
+        private const long TicksPerSecond = TimeSpan.TicksPerSecond;
+        private long ticks_since_last_call = Utility.GetMachineTime().Ticks;
 
         public TempratureSensor()
         {
@@ -32,10 +38,19 @@ namespace WebServer
             };
         }
 
+        protected void sleep_till_readable()
+        {
+            long ticks_current_time = Utility.GetMachineTime().Ticks;
+            long sleep_time = (100 + (ticks_since_last_call / TicksPerSecond)) - (ticks_current_time / TicksPerSecond);
+            Thread.Sleep((int) sleep_time);
+            ticks_since_last_call = ticks_current_time;
+        }
+
         protected void do_internal_read()
         {
-            // TODO; Replace sleep with timestamping, for each call
-            Thread.Sleep(100);
+            // Make sure to not ready the sensor too frequently,
+            // if we try to do so, give it time to cope, by sleeping.
+            sleep_till_readable();
             // Read the sensor
             int bytes_read = sensor.Execute(read_transaction, 100);
             // TODO: Throw an exception if bytes_read < 2
