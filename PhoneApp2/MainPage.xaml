@@ -22,20 +22,22 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="ApplicationTitle" Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="ApplicationTitle" Text="EAA Tracking" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="PageTitle" Text="GPS Tracking" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button Content="Start" Height="72" HorizontalAlignment="Left" Margin="47,34,0,0" Name="startButton" VerticalAlignment="Top" Width="160" Click="startButton_Click" />
-            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="253,34,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" />
-            <ScrollViewer Height="200" Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="47,112,209,295">
-                <TextBlock Width="200" TextWrapping="Wrap" Text="" Name="textBlock1"/>
+            <Button Content="Start" Height="72" HorizontalAlignment="Left" Name="startButton" VerticalAlignment="Top" Width="160" Click="startButton_Click" />
+            <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="296,0,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" />
+            <ScrollViewer Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="12,78,244,315">
+                <TextBlock Width="199" TextWrapping="Wrap" Text="" Name="textBlock1" Height="210" />
             </ScrollViewer>
             <my:Map Height="267" HorizontalAlignment="Left" Margin="0,334,0,0" Name="map1" VerticalAlignment="Top" Width="450"
                     CredentialsProvider="AqebzFfihJbcvGQ3wADMS-lIv7XOCgZndWwoCyYxrbwoYhP1EUcjmBMCl3qYUhTY" />
-            <TextBlock Height="200" HorizontalAlignment="Left" Margin="253,112,0,0" Name="speedBox" Text="" VerticalAlignment="Top" Width="160" />
+            <TextBlock Height="212" HorizontalAlignment="Left" Margin="218,78,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="232" />
+            <TextBlock Height="30" HorizontalAlignment="Left" Margin="12,0,0,279" Name="speedBlock" Text="Current Speed: N/A" VerticalAlignment="Bottom" Width="438" />
+            <Button Content="Pause" Height="72" HorizontalAlignment="Left" Margin="149,0,0,0" Name="pauseButton" VerticalAlignment="Top" Width="160" Click="pauseButton_Click" />
         </Grid>
     </Grid>
  
