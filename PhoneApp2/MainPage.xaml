@@ -30,9 +30,7 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <Button Content="Start" Height="72" HorizontalAlignment="Left" Name="startButton" VerticalAlignment="Top" Width="160" Click="startButton_Click" />
             <Button Content="Stop" Height="72" HorizontalAlignment="Left" Margin="296,0,0,0" Name="stopButton" VerticalAlignment="Top" Width="160" Click="stopButton_Click" />
-            <ScrollViewer Width="200" HorizontalScrollBarVisibility="Auto" Canvas.Top="60" Canvas.Left="340" Margin="12,78,244,331">
-                <TextBlock Width="199" TextWrapping="Wrap" Text="" Name="textBlock1" Height="194" />
-            </ScrollViewer>
+            <ListBox Name="listbox1" Width="200" Canvas.Top="60" Canvas.Left="340" Margin="12,78,244,331" ItemsSource="{Binding}"/>
             <my:Map Height="267" HorizontalAlignment="Left" Margin="0,334,0,0" Name="map1" VerticalAlignment="Top" Width="450"
                     CredentialsProvider="AqebzFfihJbcvGQ3wADMS-lIv7XOCgZndWwoCyYxrbwoYhP1EUcjmBMCl3qYUhTY" />
             <TextBlock Height="198" HorizontalAlignment="Left" Margin="218,78,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="232" />
