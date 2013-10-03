@@ -10,6 +10,8 @@ using Microsoft.SPOT.Net.NetworkInformation;
 
 namespace WebServer
 {
+    // WebServer code:
+    // http://forums.netduino.com/index.php?/topic/1500-netduino-plus-hello-world-web-server/
     public class WebServer : IDisposable
     {
         private TempratureSensor temp_sensor;
