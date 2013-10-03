@@ -10,4 +10,4 @@ PhoneApp2/obj/*
 *.swp
 *.dblite
 *.stackdump
-
+*.suo
