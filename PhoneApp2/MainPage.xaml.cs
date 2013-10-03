@@ -112,7 +112,6 @@ namespace PhoneApp2
                 startButton.Opacity = 1.0;
                 startButton.IsEnabled = true;
             }
-
         }
 
         // Method to change your position on the map, when the phone move positon.
