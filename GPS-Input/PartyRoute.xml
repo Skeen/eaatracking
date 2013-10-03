@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WindowsPhoneEmulator xmlns="http://schemas.microsoft.com/WindowsPhoneEmulator/2009/08/SensorData">
+    <SensorData>
+        <Header version="1" />
+        <GpsData latitude="56.1686076322466" longitude="10.2001670141146" />
+        <GpsData latitude="56.1690974387689" longitude="10.1987078924105" />
+        <GpsData latitude="56.1705309829327" longitude="10.1982787389681" />
+        <GpsData latitude="56.169455829827" longitude="10.2003172178194" />
+        <GpsData latitude="56.1713194094113" longitude="10.2022913236544" />
+        <GpsData latitude="56.17066238847" longitude="10.2054456014559" />
+        <GpsData latitude="56.1686673650838" longitude="10.2047160406039" />
+        <GpsData latitude="56.1666005549078" longitude="10.2056601781771" />
+        <GpsData latitude="56.1672456983492" longitude="10.2021196622775" />
+        <GpsData latitude="56.1687509908998" longitude="10.2001670141146" />
+    </SensorData>
+</WindowsPhoneEmulator>
