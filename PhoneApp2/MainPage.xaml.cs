@@ -34,7 +34,6 @@ namespace PhoneApp2
         {
             InitializeComponent();
             setUpRandomThings();
-            listbox1.DataContext = _items;
         }
 
         // To be called when our app starts, and setup most of the things.
@@ -60,9 +59,6 @@ namespace PhoneApp2
         {
             if (!tracking)
             {
-                _items.Add("Tracking started");
-                int nItems = _items.Count - 1;
-                listbox1.SelectedIndex = nItems;
                 watcher.Start();
                 tracking = true;
                 stopButton.Opacity = 1.0;
@@ -103,9 +99,6 @@ namespace PhoneApp2
         {
             if (tracking && !paused)
             {
-                _items.Add("Tracking stopped");
-                int nItems = _items.Count - 1;
-                listbox1.SelectedIndex = nItems;
                 watcher.Stop();
                 tracking = false;
                 infoBlock.Text = "Run is over!\n" + 
@@ -136,16 +129,6 @@ namespace PhoneApp2
             {
                 // Get the current location and prints it.
                 var epl = e.Position.Location;
-            if (!firstTime)
-            {
-                _items.Add(epl.Latitude.ToString("0.000"));
-                int nItems = _items.Count - 1;
-                listbox1.SelectedIndex = nItems;
-            }
-            else 
-            {
-                firstTime = false;
-            }
 
                 // Sends the data out
                 OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
@@ -167,7 +150,7 @@ namespace PhoneApp2
                 locationPushpin.Tag = "locationPushpin";
                 locationPushpin.Location = watcher.Position.Location;
                 map1.Children.Add(locationPushpin);
-                map1.SetView(watcher.Position.Location, 16.0);
+                map1.SetView(watcher.Position.Location, 17.0);
             }
         }
 
@@ -205,7 +188,7 @@ namespace PhoneApp2
                                  "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
 
                 var zoomNum = 20 - (currentSpeed * 0.3);
-                if (zoomNum < 15) zoomNum = 15;
+                if (zoomNum < 18) zoomNum = 18;
                 map1.ZoomLevel = zoomNum;
 
                 // We are done now, and save the variables for future use.
