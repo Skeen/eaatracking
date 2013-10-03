@@ -96,15 +96,14 @@ namespace PhoneApp2
          * Currently stopping the tracking */
         private void stopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (tracking)
+            if (tracking && !paused)
             {
                 textBlock1.Text = "Stopped Tracking" + "\n";
                 watcher.Stop();
                 tracking = false;
                 infoBlock.Text = "Run is over!\n" + 
-                                 "Time: " + Math.Round(timePassed.TotalMinutes,1) + "mins\n" +
-                                 "Distance traveled: " + Math.Round(distanceTraveled) + "m";
-
+                                 "Time: " + Math.Round(timePassed.TotalMinutes) + "mins\n" +
+                                 "Distance: " + Math.Round(distanceTraveled) + "m";
 
                 stopButton.Opacity = 0.5;
                 stopButton.IsEnabled = false;
@@ -113,6 +112,7 @@ namespace PhoneApp2
                 startButton.Opacity = 1.0;
                 startButton.IsEnabled = true;
             }
+
         }
 
         // Method to change your position on the map, when the phone move positon.
@@ -124,31 +124,35 @@ namespace PhoneApp2
                 MessageBox.Show("Please wait while your prosition is determined....");
                 return;
             }
-            // Get the current location and prints it.
-            var epl = e.Position.Location;
-            textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
 
-            // Sends the data out
-            OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
-            
-            // Centers our map on the new position. 
-            map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
-            
-            if (map1.Children.Count != 0)
+            if (!paused)
             {
-                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
-                if (pushpin != null)
-                {
-                    map1.Children.Remove(pushpin);
-                }
-            }
+                // Get the current location and prints it.
+                var epl = e.Position.Location;
+                textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
 
-            // Show our location with a pin on the map.
-            Pushpin locationPushpin = new Pushpin();
-            locationPushpin.Tag = "locationPushpin";
-            locationPushpin.Location = watcher.Position.Location;
-            map1.Children.Add(locationPushpin);
-            map1.SetView(watcher.Position.Location, 16.0);
+                // Sends the data out
+                OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
+
+                // Centers our map on the new position. 
+                map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
+
+                if (map1.Children.Count != 0)
+                {
+                    var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
+                    if (pushpin != null)
+                    {
+                        map1.Children.Remove(pushpin);
+                    }
+                }
+
+                // Show our location with a pin on the map.
+                Pushpin locationPushpin = new Pushpin();
+                locationPushpin.Tag = "locationPushpin";
+                locationPushpin.Location = watcher.Position.Location;
+                map1.Children.Add(locationPushpin);
+                map1.SetView(watcher.Position.Location, 16.0);
+            }
         }
 
         /* Method to handle the speed of which our runner (walker) is moving.
@@ -162,7 +166,7 @@ namespace PhoneApp2
                 return;
             }
 
-            if (lastKnownLocation != null)
+            if (lastKnownLocation != null && !paused)
             {
                 // Random functions to clean up the code (somewhat)
                 var lastKnownLocationPosition = lastKnownLocation.Position.Location;
@@ -192,12 +196,16 @@ namespace PhoneApp2
                 lastKnownLocation = e;
                 timePassed = totalTimePassedSinceStart;
             }
-            else
+            else if (!paused)
             {
                 // If no position was found, its the first reading and we have nothing to compare to
                 // So we add this location, and are ready for the next move.
                 lastKnownLocation = e;
                 startTime = e.Position.Timestamp;
+            }
+            else
+            {
+                lastKnownLocation = e;
             }
         }
     }

@@ -36,7 +36,7 @@
             <my:Map Height="267" HorizontalAlignment="Left" Margin="0,334,0,0" Name="map1" VerticalAlignment="Top" Width="450"
                     CredentialsProvider="AqebzFfihJbcvGQ3wADMS-lIv7XOCgZndWwoCyYxrbwoYhP1EUcjmBMCl3qYUhTY" />
             <TextBlock Height="198" HorizontalAlignment="Left" Margin="218,78,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="232" />
-            <TextBlock Height="46" HorizontalAlignment="Left" Margin="6,0,0,279" Name="speedBlock" Text="Current Speed: N/A" VerticalAlignment="Bottom" Width="444" />
+            <TextBlock Height="46" HorizontalAlignment="Left" Margin="6,0,0,279" Name="informationBlock" Text="" VerticalAlignment="Bottom" Width="444" />
             <Button Content="Pause" Height="72" HorizontalAlignment="Left" Margin="149,0,0,0" Name="pauseButton" VerticalAlignment="Top" Width="160" Click="pauseButton_Click" />
         </Grid>
     </Grid>
