@@ -12,11 +12,14 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Device.Location;
 using Microsoft.Phone.Controls.Maps;
+using System.Collections.ObjectModel;
 
 namespace PhoneApp2
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        ObservableCollection<string> _items = new ObservableCollection<string>();
+
         private GeoCoordinateWatcher watcher;
         private Boolean tracking = false;
         private Boolean paused = false;
@@ -24,13 +27,13 @@ namespace PhoneApp2
         private DateTimeOffset startTime; //This time is offset if the run is paused.
         private DateTimeOffset pauseTime;
         private Double distanceTraveled;
-
         
         // Constructor
         public MainPage()
         {
             InitializeComponent();
             setUpRandomThings();
+            listbox1.DataContext = _items;
         }
 
         // To be called when our app starts, and setup most of the things.
@@ -56,7 +59,9 @@ namespace PhoneApp2
         {
             if (!tracking)
             {
-                textBlock1.Text = textBlock1.Text + "\n" + "Start Tracking" + "\n";
+                _items.Add("Tracking started");
+                int nItems = _items.Count - 1;
+                listbox1.SelectedIndex = nItems;
                 watcher.Start();
                 tracking = true;
                 stopButton.Opacity = 1.0;
@@ -97,7 +102,9 @@ namespace PhoneApp2
         {
             if (tracking)
             {
-                textBlock1.Text = textBlock1.Text + "Stop Tracking" + "\n";
+                _items.Add("Tracking stopped");
+                int nItems = _items.Count - 1;
+                listbox1.SelectedIndex = nItems;
                 watcher.Stop();
                 tracking = false;
                 stopButton.Opacity = 0.5;
@@ -109,6 +116,7 @@ namespace PhoneApp2
             }
         }
 
+        bool firstTime = true;
         // Method to change your position on the map, when the phone move positon.
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
@@ -120,7 +128,16 @@ namespace PhoneApp2
             }
             // Get the current location and prints it.
             var epl = e.Position.Location;
-            textBlock1.Text = textBlock1.Text + epl.Latitude.ToString("0.000") + "\t" + epl.Longitude.ToString("0.000") + "\n";
+            if (!firstTime)
+            {
+                _items.Add(epl.Latitude.ToString("0.000"));
+                int nItems = _items.Count - 1;
+                listbox1.SelectedIndex = nItems;
+            }
+            else 
+            {
+                firstTime = false;
+            }
 
             // Sends the data out
             OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
