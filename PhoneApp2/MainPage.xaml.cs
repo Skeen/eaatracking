@@ -21,8 +21,9 @@ namespace PhoneApp2
         private Boolean tracking = false;
         private Boolean paused = false;
         private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
-        private DateTimeOffset startTime;
+        private DateTimeOffset startTime; //This time is offset if the run is paused.
         private DateTimeOffset pauseTime;
+        private Double distanceTraveled;
 
         
         // Constructor
@@ -44,7 +45,9 @@ namespace PhoneApp2
             watcher.PositionChanged += this.watcher_SpeedLevels;
 
             stopButton.Opacity = 0.5;
+            stopButton.IsEnabled = false;
             pauseButton.Opacity = 0.5;
+            pauseButton.IsEnabled = false;
         }
 
         /* Handle the information given when the start button is pressed. 
@@ -57,8 +60,11 @@ namespace PhoneApp2
                 watcher.Start();
                 tracking = true;
                 stopButton.Opacity = 1.0;
+                stopButton.IsEnabled = true;
                 pauseButton.Opacity = 1.0;
+                pauseButton.IsEnabled = true;
                 startButton.Opacity = 0.5;
+                startButton.IsEnabled = false;
             }
         }
 
@@ -72,7 +78,7 @@ namespace PhoneApp2
                 {
                     startTime.Add(DateTimeOffset.Now.Subtract(pauseTime));
                     pauseButton.Content = "Pause";
-                    infoBlock.Text += "Run resumed\n" + startTime.TimeOfDay + "\n";
+                    infoBlock.Text += "Run resumed\n";
                     paused = false;
                 }
                 else
@@ -80,7 +86,7 @@ namespace PhoneApp2
                     pauseTime = DateTimeOffset.Now;
                     paused = true;
                     pauseButton.Content = "Resume";
-                    infoBlock.Text += "Run paused\n" + startTime.TimeOfDay + "\n";
+                    infoBlock.Text += "Run paused\n";
                 }
             }
         }
@@ -91,12 +97,15 @@ namespace PhoneApp2
         {
             if (tracking)
             {
-                textBlock1.Text = textBlock1.Text + "\n" + "Stop Tracking" + "\n";
+                textBlock1.Text = textBlock1.Text + "Stop Tracking" + "\n";
                 watcher.Stop();
                 tracking = false;
                 stopButton.Opacity = 0.5;
+                stopButton.IsEnabled = false;
                 pauseButton.Opacity = 0.5;
+                pauseButton.IsEnabled = false;
                 startButton.Opacity = 1.0;
+                startButton.IsEnabled = true;
             }
         }
 
@@ -160,10 +169,18 @@ namespace PhoneApp2
                 var time = newTime.Subtract(oldTime);
 
                 // Calculate the speed and adjusts the map accordingly. 
-                var speed = Math.Round(distance / time.TotalSeconds);
-                var speedKm = speed * 3.6;
-                speedBlock.Text = "Current speed: " + speed.ToString() + " m/sec\n" + speedKm.ToString() + " km/h";
-                map1.ZoomLevel = 20 - (speedKm * 0.3);
+                var currentSpeed = Math.Round(distance / time.TotalSeconds) * 3.6;
+                // Calculate the distance traveled from last point
+                distanceTraveled = Math.Abs(distance + distanceTraveled);
+                var averageSpeed = Math.Round(distanceTraveled / (DateTimeOffset.Now.Subtract(startTime)).TotalSeconds) * 3.6;
+
+                infoBlock.Text = "Current speed: " + currentSpeed.ToString() + " km/h\n" +
+                                 "Average speed: " + averageSpeed.ToString() + " km/h\n" +
+                                 "Traveled: " + Math.Round(distanceTraveled).ToString() + "\n" +
+                                 "Time: " + DateTimeOffset.Now.Subtract(startTime).TotalSeconds;
+                var zoomNum = 20 - (currentSpeed * 0.3);
+                if (zoomNum < 15) zoomNum = 15;
+                map1.ZoomLevel = zoomNum;
             }
             
             // If no position was found, its the first reading and we have nothing to compare to
