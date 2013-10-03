@@ -23,6 +23,7 @@ namespace PhoneApp2
         private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
         private DateTimeOffset startTime; //This time is offset if the run is paused.
         private DateTimeOffset pauseTime;
+        private TimeSpan timePassed;
         private Double distanceTraveled;
 
         
@@ -56,7 +57,7 @@ namespace PhoneApp2
         {
             if (!tracking)
             {
-                textBlock1.Text = textBlock1.Text + "\n" + "Start Tracking" + "\n";
+                textBlock1.Text = "Start Tracking" + "\n";
                 watcher.Start();
                 tracking = true;
                 stopButton.Opacity = 1.0;
@@ -97,9 +98,14 @@ namespace PhoneApp2
         {
             if (tracking)
             {
-                textBlock1.Text = textBlock1.Text + "Stop Tracking" + "\n";
+                textBlock1.Text = "Stopped Tracking" + "\n";
                 watcher.Stop();
                 tracking = false;
+                infoBlock.Text = "Run is over!\n" + 
+                                 "Time: " + Math.Round(timePassed.TotalMinutes,1) + "mins\n" +
+                                 "Distance traveled: " + Math.Round(distanceTraveled) + "m";
+
+
                 stopButton.Opacity = 0.5;
                 stopButton.IsEnabled = false;
                 pauseButton.Opacity = 0.5;
@@ -159,34 +165,40 @@ namespace PhoneApp2
             if (lastKnownLocation != null)
             {
                 // Random functions to clean up the code (somewhat)
-                var oldLocation = lastKnownLocation.Position.Location;
-                var oldTime     = lastKnownLocation.Position.Timestamp;
-                var newLocation = e.Position.Location;
-                var newTime     = e.Position.Timestamp;
-                
+                var lastKnownLocationPosition = lastKnownLocation.Position.Location;
+                var lastKnownLocationTime = lastKnownLocation.Position.Timestamp;
+                var currentPosition = e.Position.Location;
+                var currentTimeSinceLastKnownPosition = e.Position.Timestamp;
+
                 // Calculate the difference between this and the preivous location.
-                var distance = oldLocation.GetDistanceTo(newLocation);
-                var time = newTime.Subtract(oldTime);
+                var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
+                var timeFromLastKnownLocation = currentTimeSinceLastKnownPosition.Subtract(lastKnownLocationTime);
 
                 // Calculate the speed and adjusts the map accordingly. 
-                var currentSpeed = Math.Round(distance / time.TotalSeconds) * 3.6;
+                var currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
                 // Calculate the distance traveled from last point
-                distanceTraveled = Math.Abs(distance + distanceTraveled);
-                var averageSpeed = Math.Round(distanceTraveled / (DateTimeOffset.Now.Subtract(startTime)).TotalSeconds) * 3.6;
+                distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
+                var totalTimePassedSinceStart = currentTimeSinceLastKnownPosition.Subtract(startTime);
+                var averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
 
-                infoBlock.Text = "Current speed: " + currentSpeed.ToString() + " km/h\n" +
-                                 "Average speed: " + averageSpeed.ToString() + " km/h\n" +
-                                 "Traveled: " + Math.Round(distanceTraveled).ToString() + "\n" +
-                                 "Time: " + DateTimeOffset.Now.Subtract(startTime).TotalSeconds;
+                infoBlock.Text = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
+                                 "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
+
                 var zoomNum = 20 - (currentSpeed * 0.3);
                 if (zoomNum < 15) zoomNum = 15;
                 map1.ZoomLevel = zoomNum;
+
+                // We are done now, and save the variables for future use.
+                lastKnownLocation = e;
+                timePassed = totalTimePassedSinceStart;
             }
-            
-            // If no position was found, its the first reading and we have nothing to compare to
-            // So we add this location, and are ready for the next move.
-            lastKnownLocation = e;
-            startTime = e.Position.Timestamp;
+            else
+            {
+                // If no position was found, its the first reading and we have nothing to compare to
+                // So we add this location, and are ready for the next move.
+                lastKnownLocation = e;
+                startTime = e.Position.Timestamp;
+            }
         }
     }
 }
