@@ -8,8 +8,6 @@ using SecretLabs.NETMF.Hardware;
 using SecretLabs.NETMF.Hardware.Netduino;
 using Microsoft.SPOT.Net.NetworkInformation;
 
-
-//sdgsdgfsdfg
 namespace WebServer
 {
     public class Program
@@ -17,7 +15,6 @@ namespace WebServer
         private const string ip = "10.9.8.2";
         private const string netmask = "255.255.255.0";
         private const string gateway = "";
-		private int a = 0;
 
         public static void Main()
         {
