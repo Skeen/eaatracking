@@ -28,29 +28,30 @@ namespace PhoneApp2
         private DateTimeOffset pauseTime;
         private TimeSpan timePassed;
         private Double distanceTraveled;
-        
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
-            setUpRandomThings();
+            init();
         }
 
-        // To be called when our app starts, and setup most of the things.
-        private void setUpRandomThings()
+        // To be called when our app starts
+        private void init()
         {
             watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default)
             {
                 MovementThreshold = 5
             };
-            
+
             watcher.PositionChanged += this.watcher_PositionChanged;
-            watcher.PositionChanged += this.watcher_SpeedLevels;
 
             stopButton.Opacity = 0.5;
             stopButton.IsEnabled = false;
             pauseButton.Opacity = 0.5;
             pauseButton.IsEnabled = false;
+            uploadButton.Opacity = 0.5;
+            uploadButton.IsEnabled = false;
         }
 
         /* Handle the information given when the start button is pressed. 
@@ -67,6 +68,10 @@ namespace PhoneApp2
                 pauseButton.IsEnabled = true;
                 startButton.Opacity = 0.5;
                 startButton.IsEnabled = false;
+                downloadButton.Opacity = 0.5;
+                downloadButton.IsEnabled = false;
+                uploadButton.Opacity = 0.5;
+                uploadButton.IsEnabled = false;
             }
         }
 
@@ -101,7 +106,7 @@ namespace PhoneApp2
             {
                 watcher.Stop();
                 tracking = false;
-                infoBlock.Text = "Run is over!\n" + 
+                infoBlock.Text = "Run is over!\n" +
                                  "Time: " + Math.Round(timePassed.TotalMinutes) + "mins\n" +
                                  "Distance: " + Math.Round(distanceTraveled) + "m";
 
@@ -111,6 +116,10 @@ namespace PhoneApp2
                 pauseButton.IsEnabled = false;
                 startButton.Opacity = 1.0;
                 startButton.IsEnabled = true;
+                downloadButton.Opacity = 1.0;
+                downloadButton.IsEnabled = true;
+                uploadButton.Opacity = 1.0;
+                uploadButton.IsEnabled = true;
             }
         }
 
@@ -120,7 +129,7 @@ namespace PhoneApp2
             // Checks if we actually have a position, otherwise shows a message.
             if (e.Position.Location.IsUnknown)
             {
-                MessageBox.Show("Please wait while your prosition is determined....");
+                MessageBox.Show("Please wait while your position is determined....");
                 return;
             }
             if (!paused)
@@ -146,69 +155,71 @@ namespace PhoneApp2
                 locationPushpin.Tag = "locationPushpin";
                 locationPushpin.Location = watcher.Position.Location;
                 map1.Children.Add(locationPushpin);
-                map1.SetView(watcher.Position.Location, 17.0);
+                map1.SetView(watcher.Position.Location, zoomAmount(e));
             }
         }
 
         /* Method to handle the speed of which our runner (walker) is moving.
          * Also handle the zoom level of the map. */
-        private void watcher_SpeedLevels(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        private double zoomAmount(/*object sender, */GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             // Checks if we actually have a position, otherwise shows a message.
-            if (e.Position.Location.IsUnknown)
+            /*if (e.Position.Location.IsUnknown)
             {
                 MessageBox.Show("Please wait while your speed is determined....");
                 return;
-            }
+            }*/
 
+            //Default zoom level
+            double zoomNum = 16;
+
+            //We are running and the pause button is not pushed
             if (lastKnownLocation != null && !paused)
             {
-                // Random functions to clean up the code (somewhat)
+                //Setting variables for calculations
                 var lastKnownLocationPosition = lastKnownLocation.Position.Location;
                 var lastKnownLocationTime = lastKnownLocation.Position.Timestamp;
                 var currentPosition = e.Position.Location;
                 var currentTime = e.Position.Timestamp;
 
-                // Calculate the difference between this and the preivous location.
+                //Calculate distance and time from last known position
                 var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
                 var timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
 
-                // Calculate the speed and adjusts the map accordingly. 
+                //Calculate the current speed
                 var currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
-                // Calculate the distance traveled from last point
+
+                //Calculate the total distance traveled and the average speed of the run in total
                 distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
                 var totalTimePassedSinceStart = currentTime.Subtract(startTime);
                 var averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
-
                 infoBlock.Text = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
                                  "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
 
-                var zoomNum = 20 - (currentSpeed * 0.3);
-                if (zoomNum < 18) zoomNum = 18;
-                map1.ZoomLevel = zoomNum;
-
-                // We are done now, and save the variables for future use.
+                //Setting variables for next iteration
                 lastKnownLocation = e;
                 timePassed = totalTimePassedSinceStart;
 
+                //returning a proper zoom level
+                zoomNum = 20 - (currentSpeed * 0.05);
+                if (zoomNum > 16) zoomNum = 16;                
+                return zoomNum;
             }
+            //We have just pushed the start button so this is the first read of a location
             else if (!paused)
             {
                 // If no position was found, its the first reading and we have nothing to compare to
                 // So we add this location, and are ready for the next move.
                 lastKnownLocation = e;
                 startTime = e.Position.Timestamp;
+                return zoomNum;
             }
+            //We have pushed the pause button
             else
             {
                 lastKnownLocation = e;
+                return zoomNum;
             }
         }
-    }
-
-    struct locationData
-    {
-        public double Time;
-        public GeoCoordinate Location;
     }
 }
