@@ -75,11 +75,13 @@ namespace PhoneApp2
                                     System.Diagnostics.Debug.WriteLine("Invalid server response");
                                     continue;
                                 }
+                                // Parse the strings
                                 DateTimeOffset dto = DateTimeOffset.Parse(strs[0]);
                                 double latitude  = Double.Parse(strs[1], NumberStyles.Float);
                                 double longitude = Double.Parse(strs[2], NumberStyles.Float);
-
+                                // Create a position
                                 PositionInformation p = new PositionInformation(dto, latitude, longitude);
+                                // add it to the list
                                 waypoints.Add(p);
                             }
                         }
