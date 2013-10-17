@@ -137,7 +137,7 @@ namespace PhoneApp2
                 // Get the current location and prints it.
                 var epl = e.Position.Location;
                 // Sends the data out
-                OutputToServer.sendData(epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
+                OutputToServer.sendData("rundt_om_nygaard", "0", epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
                 // Centers our map on the new position. 
                 map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
 
