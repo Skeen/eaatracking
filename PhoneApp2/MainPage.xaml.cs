@@ -152,7 +152,11 @@ namespace PhoneApp2
                 handleRunRoute(e);
                 
                 // Sends the data out
-                OutputToServer.sendData("rundt_om_nygaard", "0", epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
+                var ePosLatitude = e.Position.Location.Latitude;
+                var ePosLongitude = e.Position.Location.Longitude;
+                DateTimeOffset timeStamp = e.Position.Timestamp.DateTime;
+                PositionInformation pi = new PositionInformation(timeStamp, ePosLatitude, ePosLongitude);
+                OutputToServer.sendData("rundt_om_nygaard", pi);
                 // Centers our map on the new position. 
                 map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
 

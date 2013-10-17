@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 
 namespace PhoneApp2
 {
@@ -27,6 +28,74 @@ namespace PhoneApp2
 
         // TODO: This should be loaded from a file
         private static readonly string USER_ID = "skeen";
+
+        public static List<PositionInformation> listWaypoints(string routeID)
+        {
+            // Get the server page address
+            string request_url = server_link + get_waypoints_page;
+            // Write the url-rewriting
+            string url_rewriting = "?userID=" + USER_ID
+                                 + "&routeID=" + routeID
+                                 ;
+            // Combine to make a single request link
+            string request_link = request_url + url_rewriting;
+            // Create a HTTP Request, which fires the request link
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(request_link);
+            // Create a list to hold the output;
+            List<PositionInformation> waypoints = new List<PositionInformation>();
+            // Start the request asyncly (The lambda gets called when its done)
+            IAsyncResult async = request.BeginGetResponse((IAsyncResult result) =>
+            {
+                // This lambda simply consumes the entire reply, line by line, appending each line to the routeID list.
+                HttpWebRequest http_request = result.AsyncState as HttpWebRequest;
+                if (http_request != null)
+                {
+                    try
+                    {
+                        // Get the response body
+                        WebResponse response = http_request.EndGetResponse(result);
+                        // Get a stream to the response
+                        Stream s = response.GetResponseStream();
+                        // Open a reader to that stream
+                        using (StreamReader sr = new StreamReader(s))
+                        {
+                            // While there are more lines
+                            while (sr.Peek() >= 0)
+                            {
+                                // Read the first line
+                                string str = sr.ReadLine();
+                                // Split it on tabs
+                                String[] strs = str.Split(new Char[]{'\t'});
+                                // The layout is the following;
+                                // strs[0] = timestamp
+                                // strs[1] = latitude
+                                // strs[2] = longitude
+                                if (strs.Length != 3)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("Invalid server response");
+                                    continue;
+                                }
+                                DateTimeOffset dto = DateTimeOffset.Parse(strs[0]);
+                                double latitude  = Double.Parse(strs[1], NumberStyles.Float);
+                                double longitude = Double.Parse(strs[2], NumberStyles.Float);
+
+                                PositionInformation p = new PositionInformation(dto, latitude, longitude);
+                                waypoints.Add(p);
+                            }
+                        }
+                    }
+                    catch (WebException)
+                    {
+                        return;
+                    }
+                }
+            }, request);
+
+            async.AsyncWaitHandle.WaitOne();
+            async.AsyncWaitHandle.Close();
+
+            return waypoints;
+        }
 
         public static List<string> listRoutes()
         {
@@ -49,14 +118,19 @@ namespace PhoneApp2
                 {
                     try
                     {
+                        // Get the response
                         WebResponse response = http_request.EndGetResponse(result);
+                        // Get the response stream
                         Stream s = response.GetResponseStream();
-
+                        // Read the response stream
                         using (StreamReader sr = new StreamReader(s))
                         {
+                            // While there's more to read
                             while (sr.Peek() >= 0)
                             {
+                                // Read a line
                                 string str = sr.ReadLine();
+                                // Add it to our list
                                 routeIDs.Add(str);
                             }
                         }
@@ -67,14 +141,21 @@ namespace PhoneApp2
                     }
                 }
             }, request);
-
+            // Wait for the transfer to complete
             async.AsyncWaitHandle.WaitOne();
             async.AsyncWaitHandle.Close();
-
+            // Return the list
             return routeIDs;
         }
 
-        public static void sendData(string routeID, string timestamp, string latitude, string longitude)
+        public static void sendData(string routeID, PositionInformation p)
+        {
+            string timestamp = p.timeStamp.ToString();
+            string latitude = p.latitude.ToString("0.00000");
+            string longitude = p.longitude.ToString("0.00000");
+        }
+
+        private static void sendData(string routeID, string timestamp, string latitude, string longitude)
         {
             // Get the server page address
             string request_url = server_link + append_waypoint_page;
