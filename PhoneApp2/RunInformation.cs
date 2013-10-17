@@ -22,7 +22,7 @@ namespace PhoneApp2
         private DateTimeOffset pauseTime;
         public TimeSpan timePassed { get; set; }
         public Double distanceTraveled { get; set; }
-        private List<PositionInformation> currentRunPositions; 
+        public List<PositionInformation> currentRunPositions { get; set; }
         
         public RunInformation() { 
             /* Handle the logic of our app */ 

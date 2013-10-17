@@ -74,6 +74,7 @@
     <Compile Include="OutputToServer.cs" />
     <Compile Include="PositionInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunInformation.cs" />
     <Compile Include="SavePage.xaml.cs">
       <DependentUpon>SavePage.xaml</DependentUpon>
     </Compile>
