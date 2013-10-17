@@ -16,17 +16,33 @@ namespace PhoneApp2
     public class RunInformation
     {
         private MainPage mp;
-        public bool tracking { get; private set; }
-        public bool paused { get; private set; }
-        public DateTimeOffset startTime { get; private set; } /* This time is offset if the run is paused.*/
-        private DateTimeOffset pauseTime;
-        public TimeSpan timePassed { get; private set; }
-        public Double distanceTraveled { get; private set; }
-        public List<PositionInformation> currentRunPositions { get; private set; }
-        // TODO: Make a struct of the two below 
-        private PositionInformation lastKnownLocation;
+        private bool tracking;
+        private bool paused;
+        private DateTimeOffset startTime; // This time is offset if the run is paused.
+        private DateTimeOffset pauseTime; // The time at which the tracking was paused.
+        private TimeSpan timePassed;      // Time passed sine startTime
+        private Double distanceTraveled;  // The distance traveled since the start
+        private List<PositionInformation> currentRunPositions;
+        private PositionInformation lastKnownLocation; // TODO: Pick this out as the last element of currentRunPositions
         private GeoCoordinateWatcher watcher;
-        
+
+        public List<PositionInformation> listGPSPositions()
+        {
+            return currentRunPositions;
+        }
+
+        public TimeSpan getTimePassed()
+        {
+            //TODO: Calculate whenever nedded
+            return timePassed;
+        }
+
+        public double getDistanceTraveled()
+        {
+            //TODO: Calculate whenever nedded
+            return distanceTraveled;
+        }
+
         public RunInformation(MainPage mp) 
         { 
             /* Handle the logic of our app */
@@ -51,6 +67,11 @@ namespace PhoneApp2
             tracking = false;
         }
 
+        public bool isTracking()
+        {
+            return tracking;
+        }
+
         /* Method to change your position on the map, when the phone move positon. */
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
@@ -63,13 +84,11 @@ namespace PhoneApp2
             if (!paused)
             {
                 // Get the current location and adds it to the current run list
-                var epl = e.Position.Location;
-                handleRunRoute(e);
+                handleRunRoute(e.Position.Location, e.Position.Timestamp);
 
                 // Centers our map on the new position. 
                 mp.center_map(e.Position.Location.Latitude, e.Position.Location.Longitude);
                 mp.set_pushpin(e.Position.Location, e.Position.Timestamp);
-                
             }
         }
 
@@ -81,17 +100,22 @@ namespace PhoneApp2
         }
 
         // Adjust the startTime offset by the length of the pause.
-        internal void adjustTimeForPause(DateTimeOffset dateTimeOffset)
+        internal void unpause()
         {
-            startTime.Add(dateTimeOffset.Subtract(pauseTime));
+            startTime.Add(DateTimeOffset.Now.Subtract(pauseTime));
             paused = false;
         }
 
         // Called when a pause is initiated
-        internal void setPauseTime(DateTimeOffset dateTimeOffset)
+        internal void pause()
         {
-            pauseTime = dateTimeOffset;
+            pauseTime = DateTimeOffset.Now;
             paused = true;
+        }
+
+        public bool isPaused()
+        {
+            return paused;
         }
 
         internal void addToCurrentRunPositions(PositionInformation positionInformation)
@@ -100,11 +124,11 @@ namespace PhoneApp2
         }
 
         /* Method to handle the adding the entire run to a list*/
-        internal void handleRunRoute(GeoPositionChangedEventArgs<GeoCoordinate> e)
+        internal void handleRunRoute(GeoCoordinate location, DateTimeOffset timestamp)
         {
-            var ePosLatitude = e.Position.Location.Latitude;
-            var ePosLongitude = e.Position.Location.Longitude;
-            DateTimeOffset timeStamp = e.Position.Timestamp.DateTime;
+            var ePosLatitude         = location.Latitude;
+            var ePosLongitude        = location.Longitude;
+            DateTimeOffset timeStamp = timestamp.DateTime;
             currentRunPositions.Add(new PositionInformation(timeStamp, ePosLatitude, ePosLongitude));
         }
 

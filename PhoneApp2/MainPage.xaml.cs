@@ -70,14 +70,13 @@ namespace PhoneApp2
          * Currently starting the tracking */
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!ri.paused)
+            if (!ri.isPaused())
             {
                 // Clears the data and makes it ready for the next run.
                 ri.clear(); 
                 
                 // Starts tracking!
                 ri.startWatcher();
-                
 
                 // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 1.0;
@@ -97,15 +96,15 @@ namespace PhoneApp2
          * Currently pausing the run, and enable the user to resume when clicked again */
         private void pauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ri.tracking)
+            if (ri.isTracking())
             {
-                if (ri.paused)
+                if (ri.isPaused())
                 {
                     // Greys out the unneeded and unreachable buttons
                     stopButton.Opacity = 1.0;
                     stopButton.IsEnabled = true;
 
-                    ri.adjustTimeForPause(DateTimeOffset.Now);
+                    ri.unpause();
 
                     // Updates the app with appropiate information
                     pauseButton.Content = "Pause";
@@ -117,7 +116,7 @@ namespace PhoneApp2
                     stopButton.Opacity = 0.5;
                     stopButton.IsEnabled = false;
 
-                    ri.setPauseTime(DateTimeOffset.Now);
+                    ri.pause();
 
                     // Updates the app with appropiate information
                     pauseButton.Content = "Resume";
@@ -130,14 +129,14 @@ namespace PhoneApp2
          * Currently stopping the tracking */
         private void stopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ri.tracking && !ri.paused)
+            if (ri.isTracking() && !ri.isPaused())
             {
                 ri.stopWatcher();
                 
                 // Update the app with the appropiate information once the run is over.
                 infoBlock.Text = "Run is over!\n" +
-                                 "Time: " + Math.Round(ri.timePassed.TotalMinutes) + "mins\n" +
-                                 "Distance: " + Math.Round(ri.distanceTraveled) + "m";
+                                 "Time: " + Math.Round(ri.getTimePassed().TotalMinutes) + "mins\n" +
+                                 "Distance: " + Math.Round(ri.getDistanceTraveled()) + "m";
 
                 // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 0.5;
@@ -162,7 +161,7 @@ namespace PhoneApp2
          * Currently tries to upload the current route to the cloudserver */
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new SavePage(ri.currentRunPositions);
+            this.Content = new SavePage(ri.listGPSPositions());
         }
 
         public void changeTextInInfoBlock(string s1)
