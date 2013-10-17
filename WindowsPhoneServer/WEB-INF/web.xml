@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+
+    <!--||||||-->
+    <!-- INFO -->
+    <!--||||||-->
+    <display-name>Windows Phone Server</display-name>
+    <description>
+        A server for the AAE Tracking Windows Phone App.
+    </description>
+
+    <!--|||||||||||||||||-->
+    <!-- SERVLET MAPPING -->
+    <!--|||||||||||||||||-->
+    <servlet>
+        <servlet-name>AppendWaypoint</servlet-name>
+        <servlet-class>AppendWaypoint</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AppendWaypoint</servlet-name>
+        <url-pattern>/AppendWaypoint/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetRoutes</servlet-name>
+        <servlet-class>GetRoutes</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GetRoutes</servlet-name>
+        <url-pattern>/GetRoutes/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetWaypoints</servlet-name>
+        <servlet-class>GetWaypoints</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GetWaypoints</servlet-name>
+        <url-pattern>/GetWaypoints/</url-pattern>
+    </servlet-mapping>
+</web-app>
