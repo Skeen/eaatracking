@@ -54,6 +54,7 @@ namespace PhoneApp2
                 {
                     try
                     {
+                        //System.Diagnostics.Debug.WriteLine("0");
                         // Get the response body
                         WebResponse response = http_request.EndGetResponse(result);
                         // Get a stream to the response
@@ -61,6 +62,7 @@ namespace PhoneApp2
                         // Open a reader to that stream
                         using (StreamReader sr = new StreamReader(s))
                         {
+                            //System.Diagnostics.Debug.WriteLine("1");
                             // While there are more lines
                             while (sr.Peek() >= 0)
                             {
@@ -77,6 +79,7 @@ namespace PhoneApp2
                                     System.Diagnostics.Debug.WriteLine("Invalid server response");
                                     continue;
                                 }
+                                //System.Diagnostics.Debug.WriteLine("2");
                                 // Parse the strings
                                 DateTimeOffset dto = DateTimeOffset.Parse(strs[0]);
                                 double latitude  = Double.Parse(strs[1], NumberStyles.Float);
@@ -87,6 +90,7 @@ namespace PhoneApp2
                                 waypoints.Add(p);
                             }
                         }
+                        //System.Diagnostics.Debug.WriteLine("3");
                         callback(waypoints);
                     }
                     catch (WebException)

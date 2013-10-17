@@ -11,20 +11,21 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Collections.ObjectModel;
+using System.Device.Location;
 
 namespace PhoneApp2
 {
     public partial class LoadPage : PhoneApplicationPage
     {
-        ObservableCollection<String> obs;
+        private ObservableCollection<String> obs;
 
         public LoadPage()
         {
             InitializeComponent();
-            OutputToServer.listRoutes(callback);
+            OutputToServer.listRoutes(callback1);
         }
 
-        public void callback(List<string> routeIDs)
+        public void callback1(List<string> routeIDs)
         {
             // We need to run the assignment of the observable colletion to the datacontext,
             // on the UI thread, hence this wierd dispatch code.
@@ -33,11 +34,41 @@ namespace PhoneApp2
                 obs = new ObservableCollection<string>(routeIDs);
                 lstbx1.DataContext = obs;
             });
+        }        
+
+        public void callback2(List<PositionInformation> wayPoints)
+        {
+            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                foreach (PositionInformation pi in wayPoints)
+                {
+                    GeoCoordinate location = new GeoCoordinate(pi.latitude, pi.longitude);
+                    DateTimeOffset timestamp = pi.timeStamp;
+
+                    MainPage.getSingleton().set_pushpin(location, timestamp, "loaded_pushpin");
+                }
+            });
         }
 
-        private void back_clicked(object sender, RoutedEventArgs e)
+        private void back_button_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new MainPage();
+            NavigationService.GoBack();
+        }
+
+        private void load_button_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstbx1.SelectedIndex != -1)
+            {
+                String routeIDString = lstbx1.SelectedItem.ToString();
+                routeIDString = routeIDString.Substring(0, routeIDString.Length - 4);
+                System.Diagnostics.Debug.WriteLine(routeIDString);
+                OutputToServer.listWaypoints(routeIDString, callback2);
+                NavigationService.GoBack();
+            }
+            else
+            {
+                MessageBox.Show("Please select a route!");
+            } 
         }
     }
 }
