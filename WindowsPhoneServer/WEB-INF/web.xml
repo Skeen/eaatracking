@@ -13,12 +13,32 @@
     <!-- SERVLET MAPPING -->
     <!--|||||||||||||||||-->
     <servlet>
-        <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>LoginServlet</servlet-class>
+        <servlet-name>AppendWaypoint</servlet-name>
+        <servlet-class>AppendWaypoint</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>LoginServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <servlet-name>AppendWaypoint</servlet-name>
+        <url-pattern>/AppendWaypoint/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetRoutes</servlet-name>
+        <servlet-class>GetRoutes</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GetRoutes</servlet-name>
+        <url-pattern>/GetRoutes/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetWaypoints</servlet-name>
+        <servlet-class>GetWaypoints</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>GetWaypoints</servlet-name>
+        <url-pattern>/GetWaypoints/</url-pattern>
     </servlet-mapping>
 </web-app>

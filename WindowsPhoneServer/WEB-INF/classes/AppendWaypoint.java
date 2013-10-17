@@ -4,21 +4,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
 
-public class LoginServlet extends HttpServlet
+public class AppendWaypoint extends HttpServlet
 {
-    private static String path = "../webapps/WindowsPhoneServer/";
-
-    private PrintWriter out = null;
-    public LoginServlet()
-    {
-        try
-        {
-            out = new PrintWriter(new BufferedWriter(new FileWriter("output.log")));
-        }
-        catch(Exception e)
-        {
-        }
-    }
+    private static String path = "../webapps/WindowsPhoneServer/data/";
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
     {
@@ -33,15 +21,18 @@ public class LoginServlet extends HttpServlet
             (timeStamp == null) || (latitude == null) || (longitude == null))
         {
             // TODO: Possibly return a error value, instead of just returning nothing
+            System.err.println("NULL ARGUMENTS");
             return;
         }
         // 1. Create a folder with the name UserIDString (if such one doesn’t already exist). 
-        File folder = new File(path + userID).mkdirs();
+        String folder_path = path + userID + "/";
+        new File(folder_path).mkdirs();
         // 2. Create a file, within that folder, with the name RouteIDString (if such one doesn’t already exist).
         PrintWriter out = null;
         try
         {
-            out = new PrintWriter(new BufferedWriter(new FileWriter(folder.getAbsolutePath() + routeID, true)));
+            String file_path = folder_path + routeID + ".log";
+            out = new PrintWriter(new BufferedWriter(new FileWriter(file_path, true)));
             // 3. Append a line, to the end of that file, with the format;
 			//      TimeStampString \t LatitudeString \t LongitudeString
             out.println(timeStamp + "\t" + latitude + "\t" + longitude);
