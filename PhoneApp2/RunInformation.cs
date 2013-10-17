@@ -15,17 +15,18 @@ namespace PhoneApp2
 {
     public class RunInformation
     {
+        // TODO: Massive cleanup of this
         private MainPage mp;
         private bool tracking;
         private bool paused;
         private DateTimeOffset startTime; // This time is offset if the run is paused.
         private DateTimeOffset pauseTime; // The time at which the tracking was paused.
-        private TimeSpan timePassed;      // Time passed sine startTime
-        private Double distanceTraveled;  // The distance traveled since the start
+        private TimeSpan timePassedSinceStart;      // Time passed since start was pushed
+        private double distanceTraveled;  // The distance traveled since the start
         private List<PositionInformation> currentRunPositions;
         private PositionInformation lastKnownLocation; // TODO: Pick this out as the last element of currentRunPositions
-        private GeoCoordinateWatcher watcher;
         private double last_currentSpeed;
+        private GeoCoordinateWatcher watcher;
 
         public List<PositionInformation> listGPSPositions()
         {
@@ -35,7 +36,7 @@ namespace PhoneApp2
         public TimeSpan getTimePassed()
         {
             //TODO: Calculate whenever nedded
-            return timePassed;
+            return timePassedSinceStart;
         }
 
         public double getDistanceTraveled()
@@ -48,7 +49,20 @@ namespace PhoneApp2
         { 
             /* Handle the logic of our app */
             this.mp = mp;
-
+            // Is set using startWatcher() and stopWatcher()
+            this.tracking = false;
+            // Is set using pause() and unpause()
+            this.paused = false;
+            // Is set using startWatcher()
+            //this.startTime = null;
+            // Is set using pause()
+            //this.pauseTime = null;
+            this.timePassedSinceStart = new TimeSpan(0, 0, 0);
+            distanceTraveled = 0.0f;
+            currentRunPositions = new List<PositionInformation>();
+            lastKnownLocation = null;
+            last_currentSpeed = 0.0f;
+            
             watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default)
             {
                 MovementThreshold = 5
@@ -60,12 +74,14 @@ namespace PhoneApp2
         public void startWatcher()
         {
             watcher.Start();
+            startTime = (DateTimeOffset.Now);
             tracking = true;
         }
 
         public void stopWatcher()
         {
             watcher.Stop();
+            //startTime = null;
             tracking = false;
         }
 
@@ -83,7 +99,7 @@ namespace PhoneApp2
                 MessageBox.Show("Please wait while your position is determined....");
                 return;
             }
-            if (!paused)
+            if (!isPaused())
             {
                 // Get the current location and adds it to the current run list
                 handleRunRoute(e.Position.Location, e.Position.Timestamp);
@@ -99,40 +115,38 @@ namespace PhoneApp2
         private void watcher_PositionChanged2(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             //We are running and the pause button is not pushed
-            if (lastKnownLocation != null && !paused)
+            if (lastKnownLocation == null)
+            {
+                lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
+            }
+            else if(!isPaused())
             {
                 //Setting variables for calculations
-                var lastKnownLocationPosition = new GeoCoordinate(lastKnownLocation.latitude, lastKnownLocation.longitude);
-                var lastKnownLocationTime = lastKnownLocation.timeStamp;
-                var currentPosition = e.Position.Location;
-                var currentTime = e.Position.Timestamp;
+                GeoCoordinate lastKnownLocationPosition = new GeoCoordinate(lastKnownLocation.latitude, lastKnownLocation.longitude);
+                DateTimeOffset lastKnownLocationTime = lastKnownLocation.timeStamp;
+                GeoCoordinate currentPosition = e.Position.Location;
+                DateTimeOffset currentTime = e.Position.Timestamp;
 
                 //Calculate distance and time from last known position
-                var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
-                var timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
+                double distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
+                TimeSpan timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
+                System.Diagnostics.Debug.WriteLine("Distance = " + distanceFromLastKnownLocation);
+                System.Diagnostics.Debug.WriteLine("Time = " + timeFromLastKnownLocation.TotalSeconds);
 
                 //Calculate the current speed
                 double currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
 
                 //Calculate the total distance traveled and the average speed of the run in total
                 distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
-                var totalTimePassedSinceStart = currentTime.Subtract(startTime);
-                double averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
+                timePassedSinceStart = currentTime.Subtract(startTime);
+                double averageSpeed = ((distanceTraveled / timePassedSinceStart.TotalSeconds) * 3.6);
                 var s1 = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
-                    "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
+                         "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
                 mp.changeTextInInfoBlock(s1);
 
                 //Setting variables for next iteration
                 lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
-                timePassed = totalTimePassedSinceStart;
                 last_currentSpeed = currentSpeed;
-            }
-            else if (!paused)
-            {
-                // If no position was found, its the first reading and we have nothing to compare to
-                // So we add this location, and are ready for the next move.
-                lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
-                startTime = e.Position.Timestamp;
             }
             //We have pushed the pause button
             else
@@ -144,21 +158,21 @@ namespace PhoneApp2
         public void clear()
         {
             distanceTraveled = 0.0;
-            timePassed = new TimeSpan(0,0,0);
+            timePassedSinceStart = new TimeSpan(0, 0, 0);
             currentRunPositions = new List<PositionInformation>();    
         }
 
         // Adjust the startTime offset by the length of the pause.
         internal void unpause()
         {
-            startTime.Add(DateTimeOffset.Now.Subtract(pauseTime));
+            startTime.Add((DateTimeOffset.Now).Subtract(pauseTime));
             paused = false;
         }
 
         // Called when a pause is initiated
         internal void pause()
         {
-            pauseTime = DateTimeOffset.Now;
+            pauseTime = (DateTimeOffset.Now);
             paused = true;
         }
 
