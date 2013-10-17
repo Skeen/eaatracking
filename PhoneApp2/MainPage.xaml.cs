@@ -28,26 +28,38 @@ namespace PhoneApp2
             init();
         }
 
-        public void set_pushpin(GeoCoordinate location, DateTimeOffset timestamp)
+        private const string default_tag = "locationPushpin";
+        public void clear_pushpins(string tag = default_tag)
         {
-            if (map1.Children.Count != 0)
+            while (map1.Children.Count != 0)
             {
-                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
+                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == tag));
                 if (pushpin != null)
                 {
                     map1.Children.Remove(pushpin);
                 }
+                else
+                {
+                    break;
+                }
             }
+        }
 
+        public void set_pushpin(GeoCoordinate location, DateTimeOffset timestamp, string tag = default_tag)
+        {
             // Show our location with a pin on the map.
             Pushpin locationPushpin = new Pushpin();
             // Give it a name
-            locationPushpin.Tag = "locationPushpin";
+            locationPushpin.Tag = tag;
             // And a location
             locationPushpin.Location = location;
             // And add it to our map
             map1.Children.Add(locationPushpin);
-            // Also focus our view on the pin
+        }
+
+        public void focus_pushpin(GeoCoordinate location, DateTimeOffset timestamp)
+        {
+            // Focus our view on the pin
             map1.SetView(location, ri.checkZoom(location, timestamp));
         }
 
