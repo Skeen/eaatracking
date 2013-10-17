@@ -53,9 +53,6 @@
             <my:Map Height="270" HorizontalAlignment="Left" Margin="15,5,15,0" Name="map1" VerticalAlignment="Top" Width="438"
                     CredentialsProvider="AqebzFfihJbcvGQ3wADMS-lIv7XOCgZndWwoCyYxrbwoYhP1EUcjmBMCl3qYUhTY" Grid.Row="2" Center = "56.172061, 10.190958"
                     ZoomLevel = "16"/>
-            <!--
-            <Button Content="Clear" Height="72" HorizontalAlignment="Left" Margin="296,234,0,0" Name="clearButton" VerticalAlignment="Top" Width="160" />
-            -->
         </Grid>
     </Grid>
  
