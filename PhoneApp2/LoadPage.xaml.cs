@@ -38,14 +38,16 @@ namespace PhoneApp2
 
         public void callback2(List<PositionInformation> wayPoints)
         {
+            const string tag = "loaded_pushpins";
             System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                MainPage.getSingleton().clear_pushpins(tag);
                 foreach (PositionInformation pi in wayPoints)
                 {
                     GeoCoordinate location = new GeoCoordinate(pi.latitude, pi.longitude);
                     DateTimeOffset timestamp = pi.timeStamp;
 
-                    MainPage.getSingleton().set_pushpin(location, timestamp, "loaded_pushpin");
+                    MainPage.getSingleton().set_pushpin(location, timestamp, tag);
                 }
             });
         }
