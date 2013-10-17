@@ -19,7 +19,7 @@ namespace PhoneApp2
     public class OutputToServer
     {
         // TODO: This needs to be updated whenever the server location changes
-        private static readonly string server_link = "http://10.11.38.141:8080/WindowsPhoneServer/";
+        private static readonly string server_link = "http://10.185.20.249:8080/WindowsPhoneServer/";
         // userID, routeID, timeStamp, latitude, longitude
         private static readonly string append_waypoint_page = "AppendWaypoint/";
         // userID
@@ -151,9 +151,10 @@ namespace PhoneApp2
 
         public static void sendData(string routeID, PositionInformation p)
         {
-            string timestamp = p.timeStamp.ToString();
-            string latitude = p.latitude.ToString("0.00000");
-            string longitude = p.longitude.ToString("0.00000");
+            string timestamp_specifier = "s";
+            string timestamp = p.timeStamp.ToString(timestamp_specifier);
+            string latitude = p.latitude.ToString("G");
+            string longitude = p.longitude.ToString("G");
             sendData_worker(routeID, timestamp, latitude, longitude);
         }
 

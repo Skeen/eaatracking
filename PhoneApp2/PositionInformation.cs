@@ -9,7 +9,11 @@ namespace PhoneApp2
     public class PositionInformation
     {
         public PositionInformation(DateTimeOffset timeStamp, double latitude, double longitude) 
-        {}
+        {
+            this.timeStamp = timeStamp;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
 
         public DateTimeOffset timeStamp { get; private set; }
         public double latitude { get; private set; }

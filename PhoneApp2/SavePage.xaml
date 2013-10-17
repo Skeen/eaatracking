@@ -28,9 +28,9 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <Button Content="Button" Height="72" HorizontalAlignment="Left" Margin="290,6,0,0" Name="Save" VerticalAlignment="Top" Width="160" />
+            <Button Content="Save" Height="72" HorizontalAlignment="Left" Margin="290,6,0,0" Name="Save" VerticalAlignment="Top" Width="160" Click="Save_Click" />
             <TextBox Height="72" HorizontalAlignment="Left" Margin="-4,84,0,0" Name="textBox1" Text="Route1" VerticalAlignment="Top" Width="460" />
-            <Button Content="Button" Height="72" HorizontalAlignment="Left" Margin="0,529,0,0" Name="Back" VerticalAlignment="Top" Width="450" Click="Back_Click" />
+            <Button Content="Back" Height="72" HorizontalAlignment="Left" Margin="0,529,0,0" Name="Back" VerticalAlignment="Top" Width="450" Click="Back_Click" />
         </Grid>
     </Grid>
  
