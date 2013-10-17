@@ -154,14 +154,6 @@ namespace PhoneApp2
                 var epl = e.Position.Location;
                 ri.handleRunRoute(e);
                 
-                // Sends the data out
-                /*
-                var ePosLatitude = e.Position.Location.Latitude;
-                var ePosLongitude = e.Position.Location.Longitude;
-                DateTimeOffset timeStamp = e.Position.Timestamp.DateTime;
-                PositionInformation pi = new PositionInformation(timeStamp, ePosLatitude, ePosLongitude);
-                OutputToServer.sendData("rundt_om_nygaard", pi);
-                */
                 // Centers our map on the new position. 
                 map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
 
@@ -179,15 +171,8 @@ namespace PhoneApp2
                 locationPushpin.Tag = "locationPushpin";
                 locationPushpin.Location = watcher.Position.Location;
                 map1.Children.Add(locationPushpin);
-                map1.SetView(watcher.Position.Location, zoomAmount(e));
+                map1.SetView(watcher.Position.Location, ri.checkZoom(e));
             }
-        }
-
-        /* Method to handle the speed of which our runner (walker) is moving.
-         * Also handle the zoom level of the map. */
-        private double zoomAmount(GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            return ri.checkZoom(e);
         }
 
         private void load_clicked(object sender, RoutedEventArgs e)
