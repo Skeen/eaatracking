@@ -41,10 +41,27 @@ namespace PhoneApp2
 
             // Show our location with a pin on the map.
             Pushpin locationPushpin = new Pushpin();
+            // Give it a name
             locationPushpin.Tag = "locationPushpin";
+            // And a location
             locationPushpin.Location = location;
+            // And add it to our map
             map1.Children.Add(locationPushpin);
+            // Also focus our view on the pin
             map1.SetView(location, ri.checkZoom(location, timestamp));
+        }
+
+        public void active_fade_button(Button b, bool enabled)
+        {
+            if (enabled)
+            {
+                b.Opacity = 1;
+            }
+            else
+            {
+                b.Opacity = 0.5;
+            }
+            b.IsEnabled = enabled;
         }
 
         public void center_map(double latitude, double longtitude)
@@ -58,12 +75,9 @@ namespace PhoneApp2
             ri = new RunInformation(this);
 
             // Greys out unneeded and unreachable buttons
-            stopButton.Opacity = 0.5;
-            stopButton.IsEnabled = false;
-            pauseButton.Opacity = 0.5;
-            pauseButton.IsEnabled = false;
-            uploadButton.Opacity = 0.5;
-            uploadButton.IsEnabled = false;
+            active_fade_button(stopButton, false);
+            active_fade_button(pauseButton, false);
+            active_fade_button(uploadButton, false);
         }
 
         /* Handle the information given when the start button is pressed. 
@@ -79,16 +93,11 @@ namespace PhoneApp2
                 ri.startWatcher();
 
                 // Greys out unneeded and unreachable buttons
-                stopButton.Opacity = 1.0;
-                stopButton.IsEnabled = true;
-                pauseButton.Opacity = 1.0;
-                pauseButton.IsEnabled = true;
-                startButton.Opacity = 0.5;
-                startButton.IsEnabled = false;
-                downloadButton.Opacity = 0.5;
-                downloadButton.IsEnabled = false;
-                uploadButton.Opacity = 0.5;
-                uploadButton.IsEnabled = false;
+                active_fade_button(stopButton, true);
+                active_fade_button(pauseButton, true);
+                active_fade_button(startButton, false);
+                active_fade_button(downloadButton, false);
+                active_fade_button(uploadButton, false);
             }
         }
 
@@ -101,8 +110,7 @@ namespace PhoneApp2
                 if (ri.isPaused())
                 {
                     // Greys out the unneeded and unreachable buttons
-                    stopButton.Opacity = 1.0;
-                    stopButton.IsEnabled = true;
+                    active_fade_button(stopButton, true);
 
                     ri.unpause();
 
@@ -113,8 +121,7 @@ namespace PhoneApp2
                 else
                 {
                     // Greys out the unneeded and unreachable buttons
-                    stopButton.Opacity = 0.5;
-                    stopButton.IsEnabled = false;
+                    active_fade_button(stopButton, false);
 
                     ri.pause();
 
@@ -139,16 +146,11 @@ namespace PhoneApp2
                                  "Distance: " + Math.Round(ri.getDistanceTraveled()) + "m";
 
                 // Greys out unneeded and unreachable buttons
-                stopButton.Opacity = 0.5;
-                stopButton.IsEnabled = false;
-                pauseButton.Opacity = 0.5;
-                pauseButton.IsEnabled = false;
-                startButton.Opacity = 1.0;
-                startButton.IsEnabled = true;
-                downloadButton.Opacity = 1.0;
-                downloadButton.IsEnabled = true;
-                uploadButton.Opacity = 1.0;
-                uploadButton.IsEnabled = true;
+                active_fade_button(stopButton, false);
+                active_fade_button(pauseButton, false);
+                active_fade_button(startButton, true);
+                active_fade_button(downloadButton, true);
+                active_fade_button(uploadButton, true);
             }
         }
 

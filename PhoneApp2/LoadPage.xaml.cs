@@ -26,6 +26,8 @@ namespace PhoneApp2
 
         public void callback(List<string> routeIDs)
         {
+            // We need to run the assignment of the observable colletion to the datacontext,
+            // on the UI thread, hence this wierd dispatch code.
             System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 obs = new ObservableCollection<string>(routeIDs);
