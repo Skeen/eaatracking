@@ -21,8 +21,16 @@ namespace PhoneApp2
         public LoadPage()
         {
             InitializeComponent();
-            obs = new ObservableCollection<string>(OutputToServer.listRoutes());
-            lstbx1.DataContext = obs;
+            OutputToServer.listRoutes(callback);
+        }
+
+        public void callback(List<string> routeIDs)
+        {
+            System.Windows.Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                obs = new ObservableCollection<string>(routeIDs);
+                lstbx1.DataContext = obs;
+            });
         }
 
         private void back_clicked(object sender, RoutedEventArgs e)

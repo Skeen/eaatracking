@@ -102,7 +102,8 @@ namespace PhoneApp2
             return waypoints;
         }
 
-        public static List<string> listRoutes()
+        public delegate void CallbackFunction(List<String> list);
+        public static void listRoutes(CallbackFunction callback)
         {
             // Get the server page address
             string request_url = server_link + get_routes_page;
@@ -112,13 +113,14 @@ namespace PhoneApp2
             string request_link = request_url + url_rewriting;
             // Create a HTTP Request, which fires the request link
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(request_link);
-            // Create a list to hold the output;
-            List<string> routeIDs = new List<string>(); 
-            // Start the request asyncly (The lambda gets called when its done)
+            // Start the request.
             IAsyncResult async = request.BeginGetResponse((IAsyncResult result) =>
             {
+                // Create a list to hold the output;
+                List<string> routeIDs = new List<string>();
                 // This lambda simply consumes the entire reply, line by line, appending each line to the routeID list.
                 HttpWebRequest http_request = result.AsyncState as HttpWebRequest;
+
                 if (http_request != null)
                 {
                     try
@@ -135,10 +137,14 @@ namespace PhoneApp2
                             {
                                 // Read a line
                                 string str = sr.ReadLine();
+                                System.Diagnostics.Debug.WriteLine(str);
                                 // Add it to our list
                                 routeIDs.Add(str);
                             }
                         }
+                        // do the callback
+                        callback(routeIDs);
+                        System.Diagnostics.Debug.WriteLine("1337");
                     }
                     catch (WebException)
                     {
@@ -146,13 +152,6 @@ namespace PhoneApp2
                     }
                 }
             }, request);
-            // Wait for the transfer to complete
-            while (async.IsCompleted == false)
-            {
-                Thread.Sleep(250);
-            }
-            // Return the list
-            return routeIDs;
         }
 
         public static void sendData(string routeID, PositionInformation p)
@@ -187,6 +186,7 @@ namespace PhoneApp2
                 {
                     try
                     {
+                        // Consume the response
                         WebResponse response = http_request.EndGetResponse(result);
                     }
                     catch (WebException)
