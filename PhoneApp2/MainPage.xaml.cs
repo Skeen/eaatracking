@@ -258,12 +258,7 @@ namespace PhoneApp2
          * Currently tries to upload the current route to the cloudserver */
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void uploadButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Content = new SavePage(currentRunPositions);
+            this.Content = new SavePage(ri.currentRunPositions);
         }
     }
 }
