@@ -44,19 +44,19 @@
                     <TextBlock Height="230" HorizontalAlignment="Left" Margin="15,0,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="295" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical" >
-                    <HyperlinkButton Content="Save" Name="uploadButton" Width="125" Height="120" Click="uploadButton_Click">
+                    <HyperlinkButton Content="Save" Name="uploadButton" Height="100" Width="145" Click="uploadButton_Click">
                         <HyperlinkButton.Template>
                             <ControlTemplate TargetType="HyperlinkButton">
-                            <Border BorderBrush="White" BorderThickness="5" Padding="15">
+                            <Border BorderBrush="White" BorderThickness="3" Padding="15">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Text="Save"/>
                             </Border>
                         </ControlTemplate>
                         </HyperlinkButton.Template>
                     </HyperlinkButton>
-                        <HyperlinkButton Content="Load" Height="120" Width="125" Name="downloadButton" Click="load_clicked">
+                    <HyperlinkButton Content="Load" Height="100" Width="145" Name="downloadButton" Click="load_clicked" Margin="0,15,0,0">
                             <HyperlinkButton.Template>
                                 <ControlTemplate TargetType="HyperlinkButton">
-                                    <Border BorderBrush="White" BorderThickness="5" Padding="15">
+                                    <Border BorderBrush="White" BorderThickness="3" Padding="15">
                                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="25" Text="Load"/>
                                     </Border>
                                 </ControlTemplate>
