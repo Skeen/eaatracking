@@ -8,6 +8,13 @@ namespace PhoneApp2
 {
     public class PositionInformation
     {
+        public PositionInformation(DateTimeOffset timeStamp, GeoCoordinate coord)
+        {
+            this.timeStamp = timeStamp;
+            this.latitude = coord.Latitude;
+            this.longitude = coord.Longitude;
+        }
+
         public PositionInformation(DateTimeOffset timeStamp, double latitude, double longitude) 
         {
             this.timeStamp = timeStamp;
