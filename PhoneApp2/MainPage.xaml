@@ -44,7 +44,7 @@
                     <TextBlock Height="230" HorizontalAlignment="Left" Margin="15,0,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="295" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
-                    <Button Content="Save" HorizontalAlignment="Left" Margin="0" Name="uploadButton" Width="155" Height="120"/>
+                    <Button Content="Save" HorizontalAlignment="Left" Margin="0" Name="uploadButton" Width="155" Height="120" Click="uploadButton_Click" />
                     <Button Content="Load" Height="120" Width="155" HorizontalAlignment="Left" Margin="0" Name="downloadButton" VerticalAlignment="Top" FontSize="25" Click="load_clicked" />
                 </StackPanel>
             </StackPanel>

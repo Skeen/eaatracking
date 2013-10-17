@@ -20,15 +20,17 @@ namespace PhoneApp2
     {
         ObservableCollection<string> _items = new ObservableCollection<string>();
 
-        private GeoCoordinateWatcher watcher;
-        private Boolean tracking = false;
-        private Boolean paused = false;
         private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
+        private GeoCoordinateWatcher watcher;
+/*        private Boolean tracking = false;
+        private Boolean paused = false;
         private DateTimeOffset startTime; //This time is offset if the run is paused.
         private DateTimeOffset pauseTime;
         private TimeSpan timePassed;
         private Double distanceTraveled;
-        private List<PositionInformation> currentRunPositions; 
+        private List<PositionInformation> currentRunPositions; */
+
+        private RunInformation ri;
 
         // Constructor
         public MainPage()
@@ -45,8 +47,10 @@ namespace PhoneApp2
                 MovementThreshold = 5
             };
 
+            ri = new RunInformation();
             watcher.PositionChanged += this.watcher_PositionChanged;
 
+            // Greys out unneeded and unreachable buttons
             stopButton.Opacity = 0.5;
             stopButton.IsEnabled = false;
             pauseButton.Opacity = 0.5;
@@ -59,15 +63,14 @@ namespace PhoneApp2
          * Currently starting the tracking */
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!tracking)
+            if (!ri.paused)
             {
                 // Clears the data and makes it ready for the next run.
-                distanceTraveled = 0.0;
-                timePassed = new TimeSpan(0,0,0);
-                currentRunPositions = new List<PositionInformation>();
-
+                ri.clear();
+                
+                // Starts tracking!
                 watcher.Start();
-                tracking = true;
+                ri.tracking = true;
 
                 // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 1.0;
@@ -87,23 +90,29 @@ namespace PhoneApp2
          * Currently pausing the run, and enable the user to resume when clicked again */
         private void pauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (tracking)
+            if (ri.tracking)
             {
-                if (paused)
+                if (ri.paused)
                 {
+                    // Greys out the unneeded and unreachable buttons
                     stopButton.Opacity = 1.0;
                     stopButton.IsEnabled = true;
-                    startTime.Add(DateTimeOffset.Now.Subtract(pauseTime));
+
+                    ri.adjustTimeForPause(DateTimeOffset.Now);
+
+                    // Updates the app with appropiate information
                     pauseButton.Content = "Pause";
                     infoBlock.Text += "Run resumed\n";
-                    paused = false;
                 }
                 else
                 {
+                    // Greys out the unneeded and unreachable buttons
                     stopButton.Opacity = 0.5;
                     stopButton.IsEnabled = false;
-                    pauseTime = DateTimeOffset.Now;
-                    paused = true;
+
+                    ri.setPauseTime(DateTimeOffset.Now);
+
+                    // Updates the app with appropiate information
                     pauseButton.Content = "Resume";
                     infoBlock.Text += "Run paused\n";
                 }
@@ -114,13 +123,15 @@ namespace PhoneApp2
          * Currently stopping the tracking */
         private void stopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (tracking && !paused)
+            if (ri.tracking && !ri.paused)
             {
                 watcher.Stop();
-                tracking = false;
+                ri.tracking = false;
+                
+                // Update the app with the appropiate information once the run is over.
                 infoBlock.Text = "Run is over!\n" +
-                                 "Time: " + Math.Round(timePassed.TotalMinutes) + "mins\n" +
-                                 "Distance: " + Math.Round(distanceTraveled) + "m";
+                                 "Time: " + Math.Round(ri.timePassed.TotalMinutes) + "mins\n" +
+                                 "Distance: " + Math.Round(ri.distanceTraveled) + "m";
 
                 // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 0.5;
@@ -145,11 +156,11 @@ namespace PhoneApp2
                 MessageBox.Show("Please wait while your position is determined....");
                 return;
             }
-            if (!paused)
+            if (!ri.paused)
             {
                 // Get the current location and adds it to the current run list
                 var epl = e.Position.Location;
-                handleRunRoute(e);
+                ri.handleRunRoute(e);
                 
                 // Sends the data out
                 var ePosLatitude = e.Position.Location.Latitude;
@@ -178,13 +189,7 @@ namespace PhoneApp2
             }
         }
 
-        private void handleRunRoute(GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            var ePosLatitude = e.Position.Location.Latitude;
-            var ePosLongitude = e.Position.Location.Longitude;
-            DateTimeOffset timeStamp = e.Position.Timestamp.DateTime;
-            currentRunPositions.Add(new PositionInformation(timeStamp, ePosLatitude, ePosLongitude));
-        }
+        
 
         /* Method to handle the speed of which our runner (walker) is moving.
          * Also handle the zoom level of the map. */
@@ -194,7 +199,7 @@ namespace PhoneApp2
             double zoomNum = 16;
 
             //We are running and the pause button is not pushed
-            if (lastKnownLocation != null && !paused)
+            if (lastKnownLocation != null && !ri.paused)
             {
                 //Setting variables for calculations
                 var lastKnownLocationPosition = lastKnownLocation.Position.Location;
@@ -210,15 +215,15 @@ namespace PhoneApp2
                 var currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
 
                 //Calculate the total distance traveled and the average speed of the run in total
-                distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
-                var totalTimePassedSinceStart = currentTime.Subtract(startTime);
-                var averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
+                ri.distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(ri.distanceTraveled);
+                var totalTimePassedSinceStart = currentTime.Subtract(ri.startTime);
+                var averageSpeed = ((ri.distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
                 infoBlock.Text = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
                                  "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
 
                 //Setting variables for next iteration
                 lastKnownLocation = e;
-                timePassed = totalTimePassedSinceStart;
+                ri.timePassed = totalTimePassedSinceStart;
 
                 //returning a proper zoom level
                 zoomNum = 20 - (currentSpeed * 0.05);
@@ -226,12 +231,12 @@ namespace PhoneApp2
                 return zoomNum;
             }
             //We have just pushed the start button so this is the first read of a location
-            else if (!paused)
+            else if (!ri.paused)
             {
                 // If no position was found, its the first reading and we have nothing to compare to
                 // So we add this location, and are ready for the next move.
                 lastKnownLocation = e;
-                startTime = e.Position.Timestamp;
+                ri.startTime = e.Position.Timestamp;
                 return zoomNum;
             }
             //We have pushed the pause button
@@ -245,6 +250,13 @@ namespace PhoneApp2
         private void load_clicked(object sender, RoutedEventArgs e)
         {
             this.Content = new LoadPage();
+        }
+
+        /* Handle the information given when the upload button is pressed
+         * Currently tries to upload the current route to the cloudserver */
+        private void uploadButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
