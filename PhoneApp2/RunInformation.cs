@@ -103,12 +103,14 @@ namespace PhoneApp2
             {
                 // Get the current location and adds it to the current run list
                 handleRunRoute(e.Position.Location, e.Position.Timestamp);
-
                 // Centers our map on the new position. 
                 mp.center_map(e.Position.Location.Latitude, e.Position.Location.Longitude);
+                // Clear the old push_pin
                 mp.clear_pushpins();
-                mp.set_pushpin(e.Position.Location, e.Position.Timestamp);
-                mp.focus_pushpin(e.Position.Location, e.Position.Timestamp);
+                // Add a new one, at the new location 
+                mp.set_pushpin(e.Position.Location);
+                // Focus on the new push_pin
+                mp.focus_pushpin(e.Position.Location);
             }
         }
 
@@ -195,7 +197,7 @@ namespace PhoneApp2
             currentRunPositions.Add(new PositionInformation(timeStamp, ePosLatitude, ePosLongitude));
         }
 
-        internal double checkZoom(GeoCoordinate location, DateTimeOffset timestamp)
+        internal double checkZoom()
         {
             //Default zoom level
             double zoomNum = 16;
