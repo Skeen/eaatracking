@@ -13,17 +13,27 @@ using Microsoft.Phone.Controls;
 using System.Device.Location;
 using Microsoft.Phone.Controls.Maps;
 using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace PhoneApp2
 {
     public partial class MainPage : PhoneApplicationPage
     {
         ObservableCollection<string> _items = new ObservableCollection<string>();
-        private RunInformation ri;
-       
+        public RunInformation ri;
+        private static MainPage mp;
+
+        public static MainPage getSingleton()
+        {
+            return mp;
+        }
+
         // Constructor
         public MainPage()
         {
+            ri = new RunInformation(this);
+            mp = this;
+
             InitializeComponent();
             init();
         }
@@ -63,7 +73,7 @@ namespace PhoneApp2
             map1.SetView(location, ri.checkZoom(location, timestamp));
         }
 
-        public void active_fade_button(Button b, bool enabled)
+        public void active_fade_button(ButtonBase b, bool enabled)
         {
             if (enabled)
             {
@@ -84,8 +94,6 @@ namespace PhoneApp2
         // To be called when our app starts
         private void init()
         {
-            ri = new RunInformation(this);
-
             // Greys out unneeded and unreachable buttons
             active_fade_button(stopButton, false);
             active_fade_button(pauseButton, false);
@@ -168,14 +176,14 @@ namespace PhoneApp2
 
         private void load_clicked(object sender, RoutedEventArgs e)
         {
-            this.Content = new LoadPage();
+            NavigationService.Navigate(new Uri("/LoadPage.xaml", UriKind.Relative));
         }
 
         /* Handle the information given when the upload button is pressed
          * Currently tries to upload the current route to the cloudserver */
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new SavePage(ri.listGPSPositions());
+            NavigationService.Navigate(new Uri("/SavePage.xaml", UriKind.Relative));
         }
 
         public void changeTextInInfoBlock(string s1)

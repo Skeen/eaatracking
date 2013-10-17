@@ -15,22 +15,21 @@ namespace PhoneApp2
 {
     public partial class SavePage : PhoneApplicationPage
     {
-        private List<PositionInformation> positions; 
-
-        public SavePage(List<PositionInformation> init_positions)
+        public SavePage()
         {
-            positions = init_positions;
             InitializeComponent();
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            this.Content = new MainPage();
+            NavigationService.GoBack();
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             string route_name = textBox1.Text;
+
+            List<PositionInformation> positions = MainPage.getSingleton().ri.listGPSPositions();
             foreach (PositionInformation pi in positions)
             {
                 OutputToServer.sendData(route_name, pi);

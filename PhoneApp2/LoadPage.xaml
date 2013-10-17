@@ -27,10 +27,12 @@
         </StackPanel>
         
         <StackPanel Grid.Row="1" >
-            <ListBox Name="lstbx1" Width="430" Height="420" Margin="0,15,0,0" HorizontalAlignment="Center"
-                     ItemsSource="{Binding}"/>
-            <Button Height="150" Content="back" Click="back_clicked" />
-        </StackPanel>      
+            <ListBox Name="lstbx1" Width="430" Height="420" Margin="0,15,0,0" HorizontalAlignment="Center" ItemsSource="{Binding}" />
+            <StackPanel Orientation="Horizontal">
+                <HyperlinkButton Content="Back" Height="150" Name="back_button" Width="240" Click="back_button_Click" />
+                <HyperlinkButton Content="Load" Height="150" Name="load_button" Width="240" Click="load_button_Click" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 
     <!--Sample code showing usage of ApplicationBar-->
