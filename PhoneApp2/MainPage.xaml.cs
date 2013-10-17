@@ -64,7 +64,7 @@ namespace PhoneApp2
                 // Clears the data and makes it ready for the next run.
                 distanceTraveled = 0.0;
                 timePassed = new TimeSpan(0,0,0);
-                currentRunPositions = new List<GeoCoordinate>();
+                currentRunPositions = new List<PositionInformation>();
 
                 watcher.Start();
                 tracking = true;
@@ -178,8 +178,8 @@ namespace PhoneApp2
         {
             var ePosLatitude = e.Position.Location.Latitude;
             var ePosLongitude = e.Position.Location.Longitude;
-            var timeStamp = e.Position.Timestamp.TimeOfDay;
-
+            DateTimeOffset timeStamp = e.Position.Timestamp.DateTime;
+            currentRunPositions.Add(new PositionInformation(timeStamp, ePosLatitude, ePosLongitude));
         }
 
         /* Method to handle the speed of which our runner (walker) is moving.
