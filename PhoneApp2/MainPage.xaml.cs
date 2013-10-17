@@ -237,5 +237,10 @@ namespace PhoneApp2
                 return zoomNum;
             }
         }
+
+        private void load_clicked(object sender, RoutedEventArgs e)
+        {
+            this.Content = new LoadPage();
+        }
     }
 }
