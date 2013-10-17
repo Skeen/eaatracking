@@ -19,7 +19,7 @@ namespace PhoneApp2
     public class OutputToServer
     {
         // TODO: This needs to be updated whenever the server location changes
-        private static readonly string server_link = "http://10.185.20.249:8080/WindowsPhoneServer/";
+        private static readonly string server_link = "http://10.192.75.175:8080/WindowsPhoneServer/";
         // userID, routeID, timeStamp, latitude, longitude
         private static readonly string append_waypoint_page = server_link + "AppendWaypoint/";
         // userID
