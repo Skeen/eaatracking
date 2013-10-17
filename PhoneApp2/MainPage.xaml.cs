@@ -244,7 +244,7 @@ namespace PhoneApp2
 
         private void load_clicked(object sender, RoutedEventArgs e)
         {
-            //this.Content = new LoadPage();
+            this.Content = new LoadPage();
         }
     }
 }
