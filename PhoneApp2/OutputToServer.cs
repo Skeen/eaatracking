@@ -30,7 +30,8 @@ namespace PhoneApp2
         // TODO: This should be loaded from a file
         private static readonly string USER_ID = "skeen";
 
-        public static List<PositionInformation> listWaypoints(string routeID)
+        public delegate void listWaypointsCallbackFunction(List<PositionInformation> list);
+        public static void listWaypoints(string routeID, listWaypointsCallbackFunction callback)
         {
             // Get the server page address
             string request_url = server_link + get_waypoints_page;
@@ -86,6 +87,7 @@ namespace PhoneApp2
                                 waypoints.Add(p);
                             }
                         }
+                        callback(waypoints);
                     }
                     catch (WebException)
                     {
@@ -93,17 +95,10 @@ namespace PhoneApp2
                     }
                 }
             }, request);
-            // Wait for the transfer to complete
-            while (async.IsCompleted == false)
-            {
-                Thread.Sleep(250);
-            }
-            // Return the list of waypoints
-            return waypoints;
         }
 
-        public delegate void CallbackFunction(List<String> list);
-        public static void listRoutes(CallbackFunction callback)
+        public delegate void listRoutesCallbackFunction(List<String> list);
+        public static void listRoutes(listRoutesCallbackFunction callback)
         {
             // Get the server page address
             string request_url = server_link + get_routes_page;
