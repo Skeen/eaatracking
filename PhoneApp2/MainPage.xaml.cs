@@ -21,8 +21,9 @@ namespace PhoneApp2
     {
         ObservableCollection<string> _items = new ObservableCollection<string>();
         public RunInformation ri;
+        
+        // Ugly pattern to ensure that Save & Load Page har access to the MainPage.
         private static MainPage mp;
-
         public static MainPage getSingleton()
         {
             return mp;
@@ -31,31 +32,42 @@ namespace PhoneApp2
         // Constructor
         public MainPage()
         {
-            ri = new RunInformation(this);
+            // The Main Page will only be created once, and we'll therefore
+            // implement the singleton pattern in the constructor.
             mp = this;
 
+            ri = new RunInformation(this);
+            // Initialize the mainpage
             InitializeComponent();
             init();
         }
 
+        // The tag, used for the running (user) push pin, also the default for the functions below.
         private const string default_tag = "locationPushpin";
+        // Clear all pushpins, with a specific tag, from the map.
         public void clear_pushpins(string tag = default_tag)
         {
             while (map1.Children.Count != 0)
             {
+                // Get a valid push pin, if any (with the specific tag)
                 var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == tag));
+                // If a push pin was found
                 if (pushpin != null)
                 {
+                    // Remove it, and go to the top
                     map1.Children.Remove(pushpin);
+                    continue;
                 }
+                // If no push_pin was found
                 else
                 {
+                    // Let's break the loop, because we removed them all.
                     break;
                 }
             }
         }
-
-        public void set_pushpin(GeoCoordinate location, DateTimeOffset timestamp, string tag = default_tag)
+        // Add a push-pin to the given location, with the given tag.
+        public void set_pushpin(GeoCoordinate location, string tag = default_tag)
         {
             // Show our location with a pin on the map.
             Pushpin locationPushpin = new Pushpin();
@@ -67,25 +79,33 @@ namespace PhoneApp2
             map1.Children.Add(locationPushpin);
         }
 
-        public void focus_pushpin(GeoCoordinate location, DateTimeOffset timestamp)
+        // Have the map, focus on a specific push_pin location.
+        public void focus_pushpin(GeoCoordinate location)
         {
             // Focus our view on the pin
-            map1.SetView(location, ri.checkZoom(location, timestamp));
+            map1.SetView(location, ri.checkZoom());
         }
 
+        // Deactives a button, by fading and disabling it,
+        //       or active it, by unfading and enabling it.
         public void active_fade_button(ButtonBase b, bool enabled)
         {
             if (enabled)
             {
+                // Fade
                 b.Opacity = 1;
             }
             else
             {
+                // Unfade
                 b.Opacity = 0.5;
             }
+            // Enable / Unenable
             b.IsEnabled = enabled;
         }
 
+        // Center the map, on the specified latitude & longtitude
+        // TODO: Merge with `focus_pushpin`.
         public void center_map(double latitude, double longtitude)
         {
             map1.Center = new GeoCoordinate(latitude, longtitude);
@@ -131,9 +151,8 @@ namespace PhoneApp2
                 {
                     // Greys out the unneeded and unreachable buttons
                     active_fade_button(stopButton, true);
-
+                    // Do the actual unpausing
                     ri.unpause();
-
                     // Updates the app with appropiate information
                     pauseButton.Content = "Pause";
                     infoBlock.Text += "Run resumed\n";
@@ -142,9 +161,8 @@ namespace PhoneApp2
                 {
                     // Greys out the unneeded and unreachable buttons
                     active_fade_button(stopButton, false);
-
+                    // Do the actual pausing
                     ri.pause();
-
                     // Updates the app with appropiate information
                     pauseButton.Content = "Resume";
                     infoBlock.Text += "Run paused\n";
@@ -158,6 +176,7 @@ namespace PhoneApp2
         {
             if (ri.isTracking() && !ri.isPaused())
             {
+                // Stop the watcher
                 ri.stopWatcher();
                 
                 // Update the app with the appropiate information once the run is over.
@@ -176,6 +195,7 @@ namespace PhoneApp2
 
         private void load_clicked(object sender, RoutedEventArgs e)
         {
+            // Go to the load page
             NavigationService.Navigate(new Uri("/LoadPage.xaml", UriKind.Relative));
         }
 
@@ -183,11 +203,13 @@ namespace PhoneApp2
          * Currently tries to upload the current route to the cloudserver */
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
+            // Go to the save page
             NavigationService.Navigate(new Uri("/SavePage.xaml", UriKind.Relative));
         }
 
         public void changeTextInInfoBlock(string s1)
         {
+            // Update the textblock
             infoBlock.Text = s1;
         }
     }
