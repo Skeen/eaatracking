@@ -25,7 +25,6 @@ namespace PhoneApp2
         // TODO: This should be loaded from a file
         private static string USER_ID = "skeen";
 
-
         public static void sendData(string routeID, string timestamp, string latitude, string longitude)
         {
             string request_url = server_link + append_waypoint_page;
