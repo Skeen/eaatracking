@@ -41,10 +41,10 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left">
                 <StackPanel>
-                    <TextBlock Height="230" HorizontalAlignment="Left" Margin="15,0,0,0" Name="infoBlock" Text="" VerticalAlignment="Top" Width="295" />
+                    <TextBlock Height="230" HorizontalAlignment="Left" Name="infoBlock" Text="" VerticalAlignment="Top" Width="305" />
                 </StackPanel>
-                <StackPanel Orientation="Vertical" >
-                    <HyperlinkButton Content="Save" Name="uploadButton" Height="100" Width="145" Click="uploadButton_Click">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="15,0,0,0">
+                    <HyperlinkButton Content="Save" HorizontalAlignment="Left" Name="uploadButton" Height="100" Width="135" Click="uploadButton_Click">
                         <HyperlinkButton.Template>
                             <ControlTemplate TargetType="HyperlinkButton">
                             <Border BorderBrush="White" BorderThickness="3" Padding="15">
@@ -53,7 +53,7 @@
                         </ControlTemplate>
                         </HyperlinkButton.Template>
                     </HyperlinkButton>
-                    <HyperlinkButton Content="Load" Height="100" Width="145" Name="downloadButton" Click="load_clicked" Margin="0,15,0,0">
+                    <HyperlinkButton Content="Load" HorizontalAlignment="Left" Height="100" Width="135" Name="downloadButton" Click="load_clicked" Margin="0,15,0,0">
                             <HyperlinkButton.Template>
                                 <ControlTemplate TargetType="HyperlinkButton">
                                     <Border BorderBrush="White" BorderThickness="3" Padding="15">
