@@ -28,6 +28,7 @@ namespace PhoneApp2
         private DateTimeOffset pauseTime;
         private TimeSpan timePassed;
         private Double distanceTraveled;
+        private List<PositionInformation> currentRunPositions; 
 
         // Constructor
         public MainPage()
@@ -60,8 +61,15 @@ namespace PhoneApp2
         {
             if (!tracking)
             {
+                // Clears the data and makes it ready for the next run.
+                distanceTraveled = 0.0;
+                timePassed = new TimeSpan(0,0,0);
+                currentRunPositions = new List<GeoCoordinate>();
+
                 watcher.Start();
                 tracking = true;
+
+                // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 1.0;
                 stopButton.IsEnabled = true;
                 pauseButton.Opacity = 1.0;
@@ -83,6 +91,8 @@ namespace PhoneApp2
             {
                 if (paused)
                 {
+                    stopButton.Opacity = 1.0;
+                    stopButton.IsEnabled = true;
                     startTime.Add(DateTimeOffset.Now.Subtract(pauseTime));
                     pauseButton.Content = "Pause";
                     infoBlock.Text += "Run resumed\n";
@@ -90,6 +100,8 @@ namespace PhoneApp2
                 }
                 else
                 {
+                    stopButton.Opacity = 0.5;
+                    stopButton.IsEnabled = false;
                     pauseTime = DateTimeOffset.Now;
                     paused = true;
                     pauseButton.Content = "Resume";
@@ -110,6 +122,7 @@ namespace PhoneApp2
                                  "Time: " + Math.Round(timePassed.TotalMinutes) + "mins\n" +
                                  "Distance: " + Math.Round(distanceTraveled) + "m";
 
+                // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 0.5;
                 stopButton.IsEnabled = false;
                 pauseButton.Opacity = 0.5;
@@ -123,7 +136,7 @@ namespace PhoneApp2
             }
         }
 
-        // Method to change your position on the map, when the phone move positon.
+        /* Method to change your position on the map, when the phone move positon. */
         private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             // Checks if we actually have a position, otherwise shows a message.
@@ -134,8 +147,10 @@ namespace PhoneApp2
             }
             if (!paused)
             {
-                // Get the current location and prints it.
+                // Get the current location and adds it to the current run list
                 var epl = e.Position.Location;
+                handleRunRoute(e);
+                
                 // Sends the data out
                 OutputToServer.sendData("rundt_om_nygaard", "0", epl.Latitude.ToString("0.000"), epl.Longitude.ToString("0.000"));
                 // Centers our map on the new position. 
@@ -159,17 +174,18 @@ namespace PhoneApp2
             }
         }
 
+        private void handleRunRoute(GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            var ePosLatitude = e.Position.Location.Latitude;
+            var ePosLongitude = e.Position.Location.Longitude;
+            var timeStamp = e.Position.Timestamp.TimeOfDay;
+
+        }
+
         /* Method to handle the speed of which our runner (walker) is moving.
          * Also handle the zoom level of the map. */
-        private double zoomAmount(/*object sender, */GeoPositionChangedEventArgs<GeoCoordinate> e)
+        private double zoomAmount(GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
-            // Checks if we actually have a position, otherwise shows a message.
-            /*if (e.Position.Location.IsUnknown)
-            {
-                MessageBox.Show("Please wait while your speed is determined....");
-                return;
-            }*/
-
             //Default zoom level
             double zoomNum = 16;
 
