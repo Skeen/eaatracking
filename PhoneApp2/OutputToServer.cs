@@ -21,11 +21,11 @@ namespace PhoneApp2
         // TODO: This needs to be updated whenever the server location changes
         private static readonly string server_link = "http://10.185.20.249:8080/WindowsPhoneServer/";
         // userID, routeID, timeStamp, latitude, longitude
-        private static readonly string append_waypoint_page = "AppendWaypoint/";
+        private static readonly string append_waypoint_page = server_link + "AppendWaypoint/";
         // userID
-        private static readonly string get_routes_page = "GetRoutes/";
+        private static readonly string get_routes_page = server_link + "GetRoutes/";
         // userID, routeID
-        private static readonly string get_waypoints_page = "GetWaypoints/";
+        private static readonly string get_waypoints_page = server_link + "GetWaypoints/";
 
         // TODO: This should be loaded from a file
         private static readonly string USER_ID = "skeen";
@@ -34,7 +34,7 @@ namespace PhoneApp2
         public static void listWaypoints(string routeID, listWaypointsCallbackFunction callback)
         {
             // Get the server page address
-            string request_url = server_link + get_waypoints_page;
+            string request_url = get_waypoints_page;
             // Write the url-rewriting
             string url_rewriting = "?userID=" + USER_ID
                                  + "&routeID=" + routeID
@@ -101,7 +101,7 @@ namespace PhoneApp2
         public static void listRoutes(listRoutesCallbackFunction callback)
         {
             // Get the server page address
-            string request_url = server_link + get_routes_page;
+            string request_url = get_routes_page;
             // Write the url-rewriting
             string url_rewriting = "?userID=" + USER_ID;
             // Combine to make a single request link
@@ -161,7 +161,7 @@ namespace PhoneApp2
         private static void sendData_worker(string routeID, string timestamp, string latitude, string longitude)
         {
             // Get the server page address
-            string request_url = server_link + append_waypoint_page;
+            string request_url = append_waypoint_page;
             // Write the url-rewriting
             string url_rewriting = "?userID=" + USER_ID
                                  + "&routeID=" + routeID
