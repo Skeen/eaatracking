@@ -22,16 +22,8 @@ namespace PhoneApp2
 
         private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
         private GeoCoordinateWatcher watcher;
-/*        private Boolean tracking = false;
-        private Boolean paused = false;
-        private DateTimeOffset startTime; //This time is offset if the run is paused.
-        private DateTimeOffset pauseTime;
-        private TimeSpan timePassed;
-        private Double distanceTraveled;
-        private List<PositionInformation> currentRunPositions; */
-
         private RunInformation ri;
-
+       
         // Constructor
         public MainPage()
         {
@@ -66,7 +58,7 @@ namespace PhoneApp2
             if (!ri.paused)
             {
                 // Clears the data and makes it ready for the next run.
-                ri.clear();
+                ri.clear(); 
                 
                 // Starts tracking!
                 watcher.Start();
