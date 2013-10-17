@@ -1,0 +1,5 @@
+http://127.0.0.1:8080/WindowsPhoneServer/AppendWaypoint/?userID=skeen&routeID=rundt_om_nygaard&timeStamp=0&latitude=0&longitude=0
+
+http://127.0.0.1:8080/WindowsPhoneServer/GetRoutes/?userID=skeen
+
+http://127.0.0.1:8080/WindowsPhoneServer/GetWaypoints/?userID=skeen&routeID=rundt_om_nygaard
