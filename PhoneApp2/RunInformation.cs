@@ -25,6 +25,7 @@ namespace PhoneApp2
         private List<PositionInformation> currentRunPositions;
         private PositionInformation lastKnownLocation; // TODO: Pick this out as the last element of currentRunPositions
         private GeoCoordinateWatcher watcher;
+        private double last_currentSpeed;
 
         public List<PositionInformation> listGPSPositions()
         {
@@ -53,6 +54,7 @@ namespace PhoneApp2
                 MovementThreshold = 5
             };
             watcher.PositionChanged += this.watcher_PositionChanged;
+            watcher.PositionChanged += this.watcher_PositionChanged2;
         }
 
         public void startWatcher()
@@ -91,6 +93,51 @@ namespace PhoneApp2
                 mp.clear_pushpins();
                 mp.set_pushpin(e.Position.Location, e.Position.Timestamp);
                 mp.focus_pushpin(e.Position.Location, e.Position.Timestamp);
+            }
+        }
+
+        private void watcher_PositionChanged2(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            //We are running and the pause button is not pushed
+            if (lastKnownLocation != null && !paused)
+            {
+                //Setting variables for calculations
+                var lastKnownLocationPosition = new GeoCoordinate(lastKnownLocation.latitude, lastKnownLocation.longitude);
+                var lastKnownLocationTime = lastKnownLocation.timeStamp;
+                var currentPosition = e.Position.Location;
+                var currentTime = e.Position.Timestamp;
+
+                //Calculate distance and time from last known position
+                var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
+                var timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
+
+                //Calculate the current speed
+                double currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
+
+                //Calculate the total distance traveled and the average speed of the run in total
+                distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
+                var totalTimePassedSinceStart = currentTime.Subtract(startTime);
+                double averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
+                var s1 = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
+                    "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
+                mp.changeTextInInfoBlock(s1);
+
+                //Setting variables for next iteration
+                lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
+                timePassed = totalTimePassedSinceStart;
+                last_currentSpeed = currentSpeed;
+            }
+            else if (!paused)
+            {
+                // If no position was found, its the first reading and we have nothing to compare to
+                // So we add this location, and are ready for the next move.
+                lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
+                startTime = e.Position.Timestamp;
+            }
+            //We have pushed the pause button
+            else
+            {
+                lastKnownLocation = new PositionInformation(e.Position.Timestamp, e.Position.Location);
             }
         }
 
@@ -139,54 +186,10 @@ namespace PhoneApp2
             //Default zoom level
             double zoomNum = 16;
 
-            //We are running and the pause button is not pushed
-            if (lastKnownLocation != null && !paused)
-            {
-                //Setting variables for calculations
-                var lastKnownLocationPosition = new GeoCoordinate(lastKnownLocation.latitude, lastKnownLocation.longitude);
-                var lastKnownLocationTime = lastKnownLocation.timeStamp;
-                var currentPosition = location;
-                var currentTime = timestamp;
-
-                //Calculate distance and time from last known position
-                var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
-                var timeFromLastKnownLocation = currentTime.Subtract(lastKnownLocationTime);
-
-                //Calculate the current speed
-                var currentSpeed = (distanceFromLastKnownLocation / timeFromLastKnownLocation.TotalSeconds) * 3.6;
-
-                //Calculate the total distance traveled and the average speed of the run in total
-                distanceTraveled = Math.Abs(distanceFromLastKnownLocation) + Math.Abs(distanceTraveled);
-                var totalTimePassedSinceStart = currentTime.Subtract(startTime);
-                var averageSpeed = ((distanceTraveled / totalTimePassedSinceStart.TotalSeconds) * 3.6);
-                var s1 = "Current speed: " + Math.Round(currentSpeed).ToString() + " km/h\n" +
-                         "Average speed: " + Math.Round(averageSpeed).ToString() + " km/h\n";
-                mp.changeTextInInfoBlock(s1);
-                
-                //Setting variables for next iteration
-                lastKnownLocation = new PositionInformation(timestamp, location);
-                timePassed = totalTimePassedSinceStart;
-
-                //returning a proper zoom level
-                zoomNum = 20 - (currentSpeed * 0.05);
-                if (zoomNum > 16) zoomNum = 16;
-                return zoomNum;
-            }
-            //We have just pushed the start button so this is the first read of a location
-            else if (!paused)
-            {
-                // If no position was found, its the first reading and we have nothing to compare to
-                // So we add this location, and are ready for the next move.
-                lastKnownLocation = new PositionInformation(timestamp, location);
-                startTime = timestamp;
-                return zoomNum;
-            }
-            //We have pushed the pause button
-            else
-            {
-                lastKnownLocation = new PositionInformation(timestamp, location);
-                return zoomNum;
-            }
+            //returning a proper zoom level
+            zoomNum = 20 - (last_currentSpeed * 0.05);
+            if (zoomNum > 16) zoomNum = 16;
+            return zoomNum;
         }
     }
 }
