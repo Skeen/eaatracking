@@ -90,10 +90,12 @@ namespace PhoneApp2
                     }
                 }
             }, request);
-
-            async.AsyncWaitHandle.WaitOne();
-            async.AsyncWaitHandle.Close();
-
+            // Wait for the transfer to complete
+            while (async.IsCompleted == false)
+            {
+                Thread.Sleep(250);
+            }
+            // Return the list of waypoints
             return waypoints;
         }
 
@@ -142,8 +144,10 @@ namespace PhoneApp2
                 }
             }, request);
             // Wait for the transfer to complete
-            async.AsyncWaitHandle.WaitOne();
-            async.AsyncWaitHandle.Close();
+            while (async.IsCompleted == false)
+            {
+                Thread.Sleep(250);
+            }
             // Return the list
             return routeIDs;
         }
