@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Threading;
 
 using System.Collections.Generic;
 using System.IO;
@@ -159,9 +160,10 @@ namespace PhoneApp2
             string timestamp = p.timeStamp.ToString();
             string latitude = p.latitude.ToString("0.00000");
             string longitude = p.longitude.ToString("0.00000");
+            sendData_worker(routeID, timestamp, latitude, longitude);
         }
 
-        private static void sendData(string routeID, string timestamp, string latitude, string longitude)
+        private static void sendData_worker(string routeID, string timestamp, string latitude, string longitude)
         {
             // Get the server page address
             string request_url = server_link + append_waypoint_page;

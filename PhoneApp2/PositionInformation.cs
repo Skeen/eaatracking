@@ -6,7 +6,7 @@ using System.Device.Location;
 
 namespace PhoneApp2
 {
-    class PositionInformation
+    public class PositionInformation
     {
         public PositionInformation(DateTimeOffset timeStamp, double latitude, double longitude) 
         {}
