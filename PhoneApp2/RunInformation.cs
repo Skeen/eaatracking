@@ -88,7 +88,9 @@ namespace PhoneApp2
 
                 // Centers our map on the new position. 
                 mp.center_map(e.Position.Location.Latitude, e.Position.Location.Longitude);
+                mp.clear_pushpins();
                 mp.set_pushpin(e.Position.Location, e.Position.Timestamp);
+                mp.focus_pushpin(e.Position.Location, e.Position.Timestamp);
             }
         }
 
