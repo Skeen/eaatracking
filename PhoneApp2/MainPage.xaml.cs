@@ -19,9 +19,6 @@ namespace PhoneApp2
     public partial class MainPage : PhoneApplicationPage
     {
         ObservableCollection<string> _items = new ObservableCollection<string>();
-
-        private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation;
-        private GeoCoordinateWatcher watcher;
         private RunInformation ri;
        
         // Constructor
@@ -31,16 +28,34 @@ namespace PhoneApp2
             init();
         }
 
+        public void set_pushpin(GeoCoordinate location, DateTimeOffset timestamp)
+        {
+            if (map1.Children.Count != 0)
+            {
+                var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
+                if (pushpin != null)
+                {
+                    map1.Children.Remove(pushpin);
+                }
+            }
+
+            // Show our location with a pin on the map.
+            Pushpin locationPushpin = new Pushpin();
+            locationPushpin.Tag = "locationPushpin";
+            locationPushpin.Location = location;
+            map1.Children.Add(locationPushpin);
+            map1.SetView(location, ri.checkZoom(location, timestamp));
+        }
+
+        public void center_map(double latitude, double longtitude)
+        {
+            map1.Center = new GeoCoordinate(latitude, longtitude);
+        }
+
         // To be called when our app starts
         private void init()
         {
-            watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default)
-            {
-                MovementThreshold = 5
-            };
-
             ri = new RunInformation(this);
-            watcher.PositionChanged += this.watcher_PositionChanged;
 
             // Greys out unneeded and unreachable buttons
             stopButton.Opacity = 0.5;
@@ -61,8 +76,8 @@ namespace PhoneApp2
                 ri.clear(); 
                 
                 // Starts tracking!
-                watcher.Start();
-                ri.tracking = true;
+                ri.startWatcher();
+                
 
                 // Greys out unneeded and unreachable buttons
                 stopButton.Opacity = 1.0;
@@ -117,8 +132,7 @@ namespace PhoneApp2
         {
             if (ri.tracking && !ri.paused)
             {
-                watcher.Stop();
-                ri.tracking = false;
+                ri.stopWatcher();
                 
                 // Update the app with the appropiate information once the run is over.
                 infoBlock.Text = "Run is over!\n" +
@@ -139,42 +153,6 @@ namespace PhoneApp2
             }
         }
 
-        /* Method to change your position on the map, when the phone move positon. */
-        private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            // Checks if we actually have a position, otherwise shows a message.
-            if (e.Position.Location.IsUnknown)
-            {
-                MessageBox.Show("Please wait while your position is determined....");
-                return;
-            }
-            if (!ri.paused)
-            {
-                // Get the current location and adds it to the current run list
-                var epl = e.Position.Location;
-                ri.handleRunRoute(e);
-                
-                // Centers our map on the new position. 
-                map1.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
-
-                if (map1.Children.Count != 0)
-                {
-                    var pushpin = map1.Children.FirstOrDefault(p => (p.GetType() == typeof(Pushpin) && (string)((Pushpin)p).Tag == "locationPushpin"));
-                    if (pushpin != null)
-                    {
-                        map1.Children.Remove(pushpin);
-                    }
-                }
-
-                // Show our location with a pin on the map.
-                Pushpin locationPushpin = new Pushpin();
-                locationPushpin.Tag = "locationPushpin";
-                locationPushpin.Location = watcher.Position.Location;
-                map1.Children.Add(locationPushpin);
-                map1.SetView(watcher.Position.Location, ri.checkZoom(e));
-            }
-        }
-
         private void load_clicked(object sender, RoutedEventArgs e)
         {
             this.Content = new LoadPage();
@@ -182,11 +160,6 @@ namespace PhoneApp2
 
         /* Handle the information given when the upload button is pressed
          * Currently tries to upload the current route to the cloudserver */
-        private void uploadButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Content = new SavePage(ri.currentRunPositions);
-        }
-
         private void uploadButton_Click(object sender, RoutedEventArgs e)
         {
             this.Content = new SavePage(ri.currentRunPositions);

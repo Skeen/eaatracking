@@ -16,21 +16,65 @@ namespace PhoneApp2
     public class RunInformation
     {
         private MainPage mp;
-        public bool tracking { get; set; }
-        public bool paused { get; set; }
-        public DateTimeOffset startTime { get; set; } /* This time is offset if the run is paused.*/
+        public bool tracking { get; private set; }
+        public bool paused { get; private set; }
+        public DateTimeOffset startTime { get; private set; } /* This time is offset if the run is paused.*/
         private DateTimeOffset pauseTime;
-        public TimeSpan timePassed { get; set; }
-        public Double distanceTraveled { get; set; }
+        public TimeSpan timePassed { get; private set; }
+        public Double distanceTraveled { get; private set; }
         public List<PositionInformation> currentRunPositions { get; private set; }
-        private GeoPositionChangedEventArgs<GeoCoordinate> lastKnownLocation; 
+        // TODO: Make a struct of the two below 
+        private PositionInformation lastKnownLocation;
+        private GeoCoordinateWatcher watcher;
         
-        public RunInformation(MainPage mp) { 
+        public RunInformation(MainPage mp) 
+        { 
             /* Handle the logic of our app */
             this.mp = mp;
+
+            watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default)
+            {
+                MovementThreshold = 5
+            };
+            watcher.PositionChanged += this.watcher_PositionChanged;
         }
 
-        public void clear() {
+        public void startWatcher()
+        {
+            watcher.Start();
+            tracking = true;
+        }
+
+        public void stopWatcher()
+        {
+            watcher.Stop();
+            tracking = false;
+        }
+
+        /* Method to change your position on the map, when the phone move positon. */
+        private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            // Checks if we actually have a position, otherwise shows a message.
+            if (e.Position.Location.IsUnknown)
+            {
+                MessageBox.Show("Please wait while your position is determined....");
+                return;
+            }
+            if (!paused)
+            {
+                // Get the current location and adds it to the current run list
+                var epl = e.Position.Location;
+                handleRunRoute(e);
+
+                // Centers our map on the new position. 
+                mp.center_map(e.Position.Location.Latitude, e.Position.Location.Longitude);
+                mp.set_pushpin(e.Position.Location, e.Position.Timestamp);
+                
+            }
+        }
+
+        public void clear()
+        {
             distanceTraveled = 0.0;
             timePassed = new TimeSpan(0,0,0);
             currentRunPositions = new List<PositionInformation>();    
@@ -64,7 +108,7 @@ namespace PhoneApp2
             currentRunPositions.Add(new PositionInformation(timeStamp, ePosLatitude, ePosLongitude));
         }
 
-        internal double checkZoom(GeoPositionChangedEventArgs<GeoCoordinate> e)
+        internal double checkZoom(GeoCoordinate location, DateTimeOffset timestamp)
         {
             //Default zoom level
             double zoomNum = 16;
@@ -73,10 +117,10 @@ namespace PhoneApp2
             if (lastKnownLocation != null && !paused)
             {
                 //Setting variables for calculations
-                var lastKnownLocationPosition = lastKnownLocation.Position.Location;
-                var lastKnownLocationTime = lastKnownLocation.Position.Timestamp;
-                var currentPosition = e.Position.Location;
-                var currentTime = e.Position.Timestamp;
+                var lastKnownLocationPosition = new GeoCoordinate(lastKnownLocation.latitude, lastKnownLocation.longitude);
+                var lastKnownLocationTime = lastKnownLocation.timeStamp;
+                var currentPosition = location;
+                var currentTime = timestamp;
 
                 //Calculate distance and time from last known position
                 var distanceFromLastKnownLocation = lastKnownLocationPosition.GetDistanceTo(currentPosition);
@@ -94,7 +138,7 @@ namespace PhoneApp2
                 mp.changeTextInInfoBlock(s1);
                 
                 //Setting variables for next iteration
-                lastKnownLocation = e;
+                lastKnownLocation = new PositionInformation(timestamp, location);
                 timePassed = totalTimePassedSinceStart;
 
                 //returning a proper zoom level
@@ -107,14 +151,14 @@ namespace PhoneApp2
             {
                 // If no position was found, its the first reading and we have nothing to compare to
                 // So we add this location, and are ready for the next move.
-                lastKnownLocation = e;
-                startTime = e.Position.Timestamp;
+                lastKnownLocation = new PositionInformation(timestamp, location);
+                startTime = timestamp;
                 return zoomNum;
             }
             //We have pushed the pause button
             else
             {
-                lastKnownLocation = e;
+                lastKnownLocation = new PositionInformation(timestamp, location);
                 return zoomNum;
             }
         }
