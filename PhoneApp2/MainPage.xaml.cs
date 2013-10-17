@@ -246,5 +246,10 @@ namespace PhoneApp2
         {
             this.Content = new LoadPage();
         }
+
+        private void uploadButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Content = new SavePage();
+        }
     }
 }
