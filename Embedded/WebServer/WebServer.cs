@@ -46,25 +46,22 @@ namespace WebServer
                     EndPoint clientEndPoint = clientSocket.RemoteEndPoint;
                     // int byteCount = cSocket.Available;
                     int bytesReceived = clientSocket.Available;
-                    if (bytesReceived > 0)
-                    {
-                        // Get request
-                        byte[] buffer = new byte[bytesReceived];
-                        int byteCount = clientSocket.Receive(buffer, bytesReceived, SocketFlags.None);
-                        string request = new string(Encoding.UTF8.GetChars(buffer));
-                        Debug.Print(request);
-                        // Compose a response
-                        string response = temp_sensor.read();
-                        string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
-                        clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
-                        clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
-                        // Write the debug log
-                        Debug.Print("GOT REQUEST AND SEND RESPONSE");
-                        // Blink the onboard LED
-                        led.Write(true);
-                        Thread.Sleep(150);
-                        led.Write(false);
-                    }
+                    // Get request
+                    byte[] buffer = new byte[bytesReceived];
+                    int byteCount = clientSocket.Receive(buffer, bytesReceived, SocketFlags.None);
+                    string request = new string(Encoding.UTF8.GetChars(buffer));
+                    Debug.Print(request);
+                    // Compose a response
+                    string response = temp_sensor.read();
+                    string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
+                    clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
+                    clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
+                    // Write the debug log
+                    Debug.Print("GOT REQUEST AND SEND RESPONSE");
+                    // Blink the onboard LED
+                    led.Write(true);
+                    Thread.Sleep(150);
+                    led.Write(false);
                 }
             }
         }

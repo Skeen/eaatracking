@@ -34,7 +34,7 @@ namespace PhoneApp2
                 obs = new ObservableCollection<string>(routeIDs);
                 lstbx1.DataContext = obs;
             });
-        }        
+        }
 
         public void callback2(List<PositionInformation> wayPoints)
         {
@@ -51,6 +51,7 @@ namespace PhoneApp2
                 }
             });
         }
+
 
         private void back_button_Click(object sender, RoutedEventArgs e)
         {
