@@ -9,7 +9,7 @@ using SecretLabs.NETMF.Hardware.Netduino;
 
 namespace WebServer
 {
-    class TempratureSensor : IDisposable
+    public class TempratureSensor : IDisposable
     {
         private const UInt16 sensor_address = 0x4F;
         private const int sensor_clock_rate = 100;
